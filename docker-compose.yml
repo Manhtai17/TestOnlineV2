@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  elearning.g8.exam.testing:
+    image: pdmanhuet/elearning:v1
+    build:
+      context: .
+      dockerfile: Elearning.G8.Exam.Testing/Dockerfile
+
+  elearning.g8.worker.workerservice:
+    image: pdmanhuet/workerservice:v1
+    build:
+      context: .
+      dockerfile: Elearning.G8.Worker.WorkerService/Dockerfile
+

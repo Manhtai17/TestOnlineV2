@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{85F026B0-EA81-4EC9-88CF-1F7961DD20E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elearning.G8.Exam", "Elearning.G8.Exam", "{18AF83DF-44ED-4DC5-9E9E-B23DB38A0039}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Exam.Testing", "Elearning.G8.Exam.Testing\Elearning.G8.Exam.Testing.csproj", "{2700C54D-3661-4917-8599-D95F1A22D47A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Exam.ApplicationCore", "Elearning.G8.Exam.ApplicationCore\Elearning.G8.Exam.ApplicationCore.csproj", "{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Exam.Infracstructure", "Elearning.G8.Exam.Infracstructure\Elearning.G8.Exam.Infracstructure.csproj", "{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{899248DE-2FB1-467A-9B4B-D6D645D6CBEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Common.Kafka", "Elearning.G8.Common.Kafka\Elearning.G8.Common.Kafka.csproj", "{0260E070-987C-4440-B116-30E267AD7896}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{31545F39-B716-478E-9271-E6F2D7B4D62C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Worker.WorkerService", "Elearning.G8.Worker.WorkerService\Elearning.G8.Worker.WorkerService.csproj", "{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9EC259B5-6A44-4577-B678-6D184DEFC4A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2700C54D-3661-4917-8599-D95F1A22D47A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2700C54D-3661-4917-8599-D95F1A22D47A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2700C54D-3661-4917-8599-D95F1A22D47A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2700C54D-3661-4917-8599-D95F1A22D47A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0260E070-987C-4440-B116-30E267AD7896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0260E070-987C-4440-B116-30E267AD7896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0260E070-987C-4440-B116-30E267AD7896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0260E070-987C-4440-B116-30E267AD7896}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{18AF83DF-44ED-4DC5-9E9E-B23DB38A0039} = {85F026B0-EA81-4EC9-88CF-1F7961DD20E1}
+		{2700C54D-3661-4917-8599-D95F1A22D47A} = {18AF83DF-44ED-4DC5-9E9E-B23DB38A0039}
+		{F810E79B-BAE2-4F4C-BBF7-93915EB0B841} = {18AF83DF-44ED-4DC5-9E9E-B23DB38A0039}
+		{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD} = {18AF83DF-44ED-4DC5-9E9E-B23DB38A0039}
+		{899248DE-2FB1-467A-9B4B-D6D645D6CBEA} = {85F026B0-EA81-4EC9-88CF-1F7961DD20E1}
+		{0260E070-987C-4440-B116-30E267AD7896} = {899248DE-2FB1-467A-9B4B-D6D645D6CBEA}
+		{31545F39-B716-478E-9271-E6F2D7B4D62C} = {85F026B0-EA81-4EC9-88CF-1F7961DD20E1}
+		{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0} = {31545F39-B716-478E-9271-E6F2D7B4D62C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {510B9B66-CC76-4D9B-AD07-F34F7E977888}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  elearning.g8.exam.testing:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  elearning.g8.worker.workerservice:
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
