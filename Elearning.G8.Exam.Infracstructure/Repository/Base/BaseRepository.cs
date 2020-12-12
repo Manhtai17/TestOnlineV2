@@ -307,35 +307,7 @@ namespace Elearning.G8.Exam.Infrastructure.Repository
 
 		#region EXTEND_METHOD
 
-		public virtual Task<IReadOnlyList<T>> GetListAsyncBySpecification(ISpecification<T> spec)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual Task UpdateAsync(T entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual Task DeleteAsync(T entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual Task<int> CountAsync(ISpecification<T> spec)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual Task<T> AddAsync(T entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<IReadOnlyList<T>> GetListAsync(string procedureName, object[] parameters)
-		{
-			throw new NotImplementedException();
-		}
+		
 
 		#endregion
 
@@ -507,7 +479,32 @@ namespace Elearning.G8.Exam.Infrastructure.Repository
 			}
 		}
 
-		
+		public Task<IReadOnlyList<T>> GetListAsyncBySpecification(ISpecification<T> spec)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<T> AddAsync(T entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task UpdateAsync(T entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task DeleteAsync(T entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<int> CountAsync(ISpecification<T> spec)
+		{
+			throw new NotImplementedException();
+		}
+
+
 
 
 

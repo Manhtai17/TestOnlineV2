@@ -12,5 +12,9 @@ namespace Elearning.G8.Exam.ApplicationCore
 		public DateTime? DateOfBirth { get; set; }
 		public string Class { get; set; }
 		public string PhoneNumber { get; set; }
+		/// <summary>
+		/// UserID cua các nhóm tích hợp
+		/// </summary>
+		public string IntegrationID { get; set; }
 	}
 }

@@ -6,7 +6,9 @@ namespace Elearning.G8.Exam.Testing.Interfaces
 {
 	public interface ITermService
 	{
-		Task<IEnumerable<Term>> Paging(string userID, int pageIndex, int pageSize, string keyword);
+		Task<ActionServiceResult> Paging(string userID, int pageIndex = 1, int pageSize = 99, string keyword = null);
+
+		Task<ActionServiceResult> GetByTermID(string termID);
 		Task<int> GetTotalRecords(string userID, string keyword);
 	}
 }

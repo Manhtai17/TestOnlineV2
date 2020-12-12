@@ -58,7 +58,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			}
 			else
 			{
-				var response = await _contestService.CheckScreen(userID, contestID, "student");
+				var response = await _contestService.CheckScreen(userID,contestID,"student");
 				result.Data = response;
 			}
 			return result;

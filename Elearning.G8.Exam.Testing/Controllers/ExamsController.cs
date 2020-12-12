@@ -5,11 +5,13 @@ using Elearning.G8.Exam.ApplicationCore;
 using Elearning.G8.Exam.ApplicationCore.Entitty;
 using Elearning.G8.Exam.Infrastructure.Repository.Interfaces;
 using Elearning.G8.Exam.Testing.Interfaces;
+using Elearning.G8.Exam.Testing.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
 
@@ -133,21 +135,26 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				}
 				else
 				{
-					response = await _baseEntityService.Update(entity);
+					if(entity.Status != 1)
+					{
+						entity.ModifiedDate = Utils.GetNistTime();
+						response = await _baseEntityService.Update(entity);
+					}
 					return response;
 				}
 				return response;
 			}
-			return new ActionServiceResult();
+			return new ActionServiceResult(); 
 		}
 
 
-		[HttpGet]
-		public async Task<ActionServiceResult> Get([FromBody] string examID)
+		[HttpGet("{examID}")]
+		public async Task<ActionServiceResult> GetByID( string examID)
 		{
 			StringValues userHeader;
 			Request.Headers.TryGetValue("UserID", out userHeader);
 			var userID = userHeader.FirstOrDefault().ToString();
+
 			var result = new ActionServiceResult();
 			if (userID == null || string.IsNullOrEmpty(userID) || examID == null)
 			{
@@ -166,7 +173,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				}
 				else
 				{
-					return new ActionServiceResult() { Data = exam };
+					return new ActionServiceResult() { Success=true,Code = Code.Success,Data = exam };
 				}
 
 			}
@@ -190,11 +197,10 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			{
 				if (exam.Status == 0)
 				{
-					exam.ModifiedDate = DateTime.Now;
+					exam.ModifiedDate = Utils.GetNistTime();
 					var message = JsonConvert.SerializeObject(exam);
 					using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
 					{
-
 						await producer.SendMessage(message);
 					}
 					return new ActionServiceResult()
@@ -208,12 +214,13 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				else
 				{
 					var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
-					if (DateTime.Compare(DateTime.Now, contest.FinishTime) <= 0)
+					if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)
 					{
 						//Todo tinh diem
 						exam.Point = 10;
 						exam.IsDoing = 0;
 						exam.Status = 1;
+						exam.ModifiedDate = Utils.GetNistTime();
 						await _baseEntityService.Update(exam);
 						result.Data = exam.ExamId;
 					}

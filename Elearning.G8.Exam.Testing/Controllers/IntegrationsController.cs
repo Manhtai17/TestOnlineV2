@@ -1,10 +1,14 @@
-﻿using Elearning.G8.Exam.ApplicationCore;
+﻿using AutoMapper;
+using Elearning.G8.Exam.ApplicationCore;
+using Elearning.G8.Exam.ApplicationCore.Integrations;
 using Elearning.G8.Exam.Infrastructure.Repository.Interfaces;
 using Elearning.G8.Exam.Testing.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -18,19 +22,21 @@ namespace Elearning.G8.Exam.Testing.Controllers
 	public class IntegrationsController : ControllerBase
 	{
 		private readonly Uri _uri;
-		private readonly IUserService _userService;
+		private readonly IBaseEntityService<User> _baseUserService;
 		private readonly IBaseEntityService<Contest> _baseContestService;
 		private readonly IBaseEntityService<Transcript> _baseTranscriptService;
 		private readonly IBaseRepository<Transcript> _baseTranscriptRepo;
+		private readonly IMapper _mapper;
 
 
-		public IntegrationsController(IUserService userService, IBaseEntityService<Contest> baseContestService, IBaseEntityService<Transcript> baseTranscriptService, IBaseRepository<Transcript> baseTranscriptRepo)
+		public IntegrationsController(IUserService userService, IBaseEntityService<Contest> baseContestService, IBaseEntityService<Transcript> baseTranscriptService, IBaseRepository<Transcript> baseTranscriptRepo, IMapper mapper, IBaseEntityService<User> baseUserService)
 		{
 			_uri = new Uri("http://api.toedu.me");
-			_userService = userService;
 			_baseContestService = baseContestService;
 			_baseTranscriptService = baseTranscriptService;
 			_baseTranscriptRepo = baseTranscriptRepo;
+			_mapper = mapper;
+			_baseUserService = baseUserService;
 		}
 
 		[HttpGet("healthz")]
@@ -80,6 +86,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				{
 					//update db
 					result.Data.RoleId = Guid.Parse("01625518-9205-2988-5145-017982868048");
+					await _baseUserService.Insert(result.Data);
 					return Ok(result.Data.Id);
 				}
 			}
@@ -139,11 +146,25 @@ namespace Elearning.G8.Exam.Testing.Controllers
 
 		public async Task<ActionServiceResult> GetTranscript(string contestID)
 		{
-			StringValues clientIDHeader;
+			StringValues clientIDHeader,authorization;
 			Request.Headers.TryGetValue("ClientID", out clientIDHeader);
+			Request.Headers.TryGetValue("Authorization", out authorization);
 			var clientID = clientIDHeader.FirstOrDefault().ToString();
+			var abc= authorization.FirstOrDefault().ToString();
+			var handler = new JwtSecurityTokenHandler();
+
+			var jsonToken = handler.ReadJwtToken(abc);
+			var a = jsonToken.Claims;
+
+			foreach(var claim in a)
+			{
+				var c = claim.Value;
+				var d = claim.ValueType;
+			}
+			//var list = JsonConvert.DeserializeObject<TokenInfo>(jsonToken.Claims.ToString());
 			var result = new ActionServiceResult();
-			if (clientID == null || clientID.Trim() != "714b320c-1046-4e37-a3c3-20bc6fcac014" || String.IsNullOrEmpty(clientID) || false)
+			Console.WriteLine();
+			if (clientID == null || clientID.Trim() != "714b320c-1046-4e37-a3c3-20bc6fcac014" || String.IsNullOrEmpty(clientID))
 			{
 				return new ActionServiceResult()
 				{
@@ -154,30 +175,61 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			}
 			else
 			{
-				var contest = await _baseContestService.GetEntityById(contestID);
+				try
+				{
+					var contest = await _baseContestService.GetEntityById(contestID);
 
-				if (contest == null)
+
+					if (contest == null)
+					{
+						return new ActionServiceResult()
+						{
+							Success = false,
+							Code = Code.ValidateEntity,
+							Message = "Không tồn tại kì thi"
+						};
+					}
+					else
+					{
+						var response = await _baseTranscriptRepo.GetEntitites("Proc_GetTranscriptsByContestID", new object[] { contestID });
+						if (response == null)
+							return new ActionServiceResult()
+							{
+								Code = Code.Exception,
+								Success = false,
+								Data = null
+							};
+						else
+						{
+							var tmp = _mapper.Map<List<IntegrationTranscript>>(response);
+							var data = new
+							{
+								Contest = new
+								{
+									ContestName = contest.ContestName,
+
+									StartTime = contest.StartTime,
+
+									TimeToDo = contest.TimeToDo,
+
+									FinishTime = contest.FinishTime
+								},
+								Data = tmp
+							};
+							result.Data = data;
+						}
+					}
+				}
+				catch (Exception)
 				{
 					return new ActionServiceResult()
 					{
+						Code = Code.Exception,
 						Success = false,
-						Code = Code.ValidateEntity,
-						Message = "Không tồn tại kì thi"
+						Data = null
 					};
 				}
-				else
-				{
-					var response = await _baseTranscriptRepo.GetEntitites("Proc_GetTranscriptsByContestID", new object[] { contestID });
-					if (response == null)
-						return new ActionServiceResult()
-						{
-							Code = Code.Exception,
-							Success = false,
-							Data = null
-						};
-					else
-						result.Data = response;
-				}
+
 			}
 
 			return result;

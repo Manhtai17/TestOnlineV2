@@ -11,5 +11,6 @@ namespace Elearning.G8.Exam.Infrastructure.Repository
 			var result = (GetEntitites("Proc_GetContestsByTermID", new object[] { termID, indexPage, sizePage, keyword })).Result;
 			return result;
 		}
+
 	}
 }

@@ -11,7 +11,5 @@ namespace Elearning.G8.Exam.ApplicationCore
 
 		public string TermCode { get; set; }
 
-		public List<Guid> ContestIDs { get; set; }
-
 	}
 }

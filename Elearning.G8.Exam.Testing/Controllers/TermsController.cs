@@ -20,7 +20,29 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			_baseEntityService = baseEntityService;
 		}
 		[HttpGet]
-		public async Task<ActionServiceResult> Paging(string keyword, int index = 1, int size = 15)
+		//public async Task<ActionServiceResult> Paging(string keyword, int index = 1, int size = 99)
+		//{
+		//	StringValues userHeader;
+		//	Request.Headers.TryGetValue("UserID", out userHeader);
+		//	var userID = userHeader.FirstOrDefault().ToString();
+		//	var result = new ActionServiceResult();
+		//	if (userID == null || string.IsNullOrEmpty(userID))
+		//	{
+		//		result.Success = false;
+		//		result.Code = Code.NotFound;
+		//	}
+		//	else
+		//	{
+		//		var response = await _termService.Paging(userID, index, size, keyword);
+		//		result.Data = response;
+		//		result.TotalRecords = await _termService.GetTotalRecords(userID, keyword);
+		//	}
+		//	return result;
+
+		//}
+
+		[HttpGet()]
+		public async Task<ActionServiceResult> GetByUserCode()
 		{
 			StringValues userHeader;
 			Request.Headers.TryGetValue("UserID", out userHeader);
@@ -31,16 +53,31 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				result.Success = false;
 				result.Code = Code.NotFound;
 			}
-			else
-			{
-				var response = await _termService.Paging(userID, index, size, keyword);
-				result.Data = response;
-				result.TotalRecords = await _termService.GetTotalRecords(userID, keyword);
-			}
-			return result;
+
+			var response = await _termService.Paging(userID);
+			return response;
 
 		}
 
+
+
+		[HttpGet("{termID}")]
+		public async Task<ActionServiceResult> GetByID(string termID)
+		{
+			StringValues userHeader;
+			Request.Headers.TryGetValue("UserID", out userHeader);
+			var userID = userHeader.FirstOrDefault().ToString();
+			var result = new ActionServiceResult();
+			if (userID == null || string.IsNullOrEmpty(userID))
+			{
+				result.Success = false;
+				result.Code = Code.NotFound;
+			}
+
+			var response = await _termService.GetByTermID(termID);
+			return response;
+
+		}
 		//[HttpGet]
 		//[Route("{termID}/Contests/")]
 		//public ActionServiceResult GetContestsByTermID(string termID)

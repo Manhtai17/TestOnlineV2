@@ -2,12 +2,17 @@
 using Elearning.G8.Exam.ApplicationCore;
 using Elearning.G8.Exam.Infrastructure.Repository.Interfaces;
 using Elearning.G8.Exam.Testing.Interfaces;
+using Elearning.G8.Exam.Testing.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Cache;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
 
@@ -35,7 +40,7 @@ namespace Elearning.G8.Exam.Testing.Services
 		public async Task<Examination> StartDoing(string examID)
 		{
 			var exam = await _examRepo.GetEntityByIdAsync(examID);
-			exam.CreatedDate = DateTime.Now;
+			exam.CreatedDate = Utils.GetNistTime();
 			await _examRepo.Update(exam);
 			return exam;
 		}
@@ -51,13 +56,13 @@ namespace Elearning.G8.Exam.Testing.Services
 					result.Data = response;
 					return result;
 				case "student":
-					var exam = response.Where(item => item.UserId.ToString() == userID).FirstOrDefault();
+					var exam = response.Where(item => item.UserId.ToString().Trim() == userID.Trim()).FirstOrDefault();
 
 					if (exam == null)
 					{
 						//Handle goi api tao de thi tu nhom 10
-						var res = JsonConvert.SerializeObject("[{'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'},{ 'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'},{ 'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'}]");
-						/*
+						/*var res = JsonConvert.SerializeObject("[{'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'},{ 'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'},{ 'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'}]");
+						
 						var examRes = new Exam();
 						examRes.ContestId = Guid.Parse(contestID);
 						examRes.ExamId = Guid.NewGuid();
@@ -176,7 +181,7 @@ namespace Elearning.G8.Exam.Testing.Services
 
 		}
 
-
+		
 
 
 		//public async Task<Exam> GetExamForStudent(string userID, string contestID, IEnumerable<Exam> exams)

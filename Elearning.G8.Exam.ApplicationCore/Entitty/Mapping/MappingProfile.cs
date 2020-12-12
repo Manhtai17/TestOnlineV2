@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Elearning.G8.Exam.ApplicationCore.Entitty;
+using Elearning.G8.Exam.ApplicationCore.Integrations;
 
 namespace Elearning.G8.Exam.ApplicationCore
 {
@@ -10,7 +11,8 @@ namespace Elearning.G8.Exam.ApplicationCore
 
 			CreateMap<Examination, ExamDTO>();
 			CreateMap<Contest, ContestDTO>();
-
+			CreateMap<Transcript, IntegrationTranscript>();
+			CreateMap<IntegrationTranscript, Transcript>();
 		}
 	}
 }

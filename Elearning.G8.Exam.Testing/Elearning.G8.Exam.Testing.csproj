@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Elearning.G8.Common.Kafka\Elearning.G8.Common.Kafka.csproj" />
+    <ProjectReference Include="..\Elearning.G8.Exam.ApplicationCore\Elearning.G8.Exam.ApplicationCore.csproj" />
     <ProjectReference Include="..\Elearning.G8.Exam.Infracstructure\Elearning.G8.Exam.Infracstructure.csproj" />
   </ItemGroup>
 
