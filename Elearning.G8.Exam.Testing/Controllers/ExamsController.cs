@@ -164,15 +164,39 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			else
 			{
 				var response = new ActionServiceResult();
-				var exam = _baseEntityService.GetEntityById(examID);
+				var exam = await _baseEntityService.GetEntityById(examID);
 				if (exam == null)
 				{
 					response.Success = false;
 					response.Code = Code.NotFound;
 					response.Message = Resources.NotFound;
+
+					return response;
 				}
 				else
 				{
+					if (exam.IsDoing == 1)
+					{
+						if ((Utils.GetNistTime() - exam.ModifiedDate.Value).TotalSeconds > 15)
+						{
+							exam.ModifiedDate = Utils.GetNistTime();
+							await _baseEntityService.Update(exam);
+
+							return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
+						}
+						else
+						{
+							return new ActionServiceResult() { Success = true, Code = Code.IsDoing, Data = null };
+						}
+						
+					}
+					else
+					{
+						exam.IsDoing = 1;
+						exam.CreatedDate = Utils.GetNistTime();
+						exam.ModifiedDate = Utils.GetNistTime();
+						await _baseEntityService.Update(exam);
+					}
 					return new ActionServiceResult() { Success=true,Code = Code.Success,Data = exam };
 				}
 

@@ -8,7 +8,7 @@ namespace Elearning.G8.Exam.Testing.Interfaces
 	{
 		Task<IEnumerable<Contest>> GetByTermID(string termID, int indexPage, int sizePage, string keyword);
 		Task<int> GetTotalRecords(string userID, string keyword);
-		Task<ActionServiceResult> CheckScreen(string userID, string contestID, string roleName);
+		Task<ActionServiceResult> CheckScreen(string userID, string contestID);
 		ActionServiceResult ThongKe(string userID, string contestID, string roleName);
 	}
 }

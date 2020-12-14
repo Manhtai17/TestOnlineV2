@@ -72,7 +72,11 @@
 			ErrorDeleteEntity=601,
 
 			NotTimeToDo=602,
-			TimeOut=603
+			TimeOut=603,
+			/// <summary>
+			/// Đang có người thi
+			/// </summary>
+			IsDoing=604
 		}
 	}
 }

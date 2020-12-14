@@ -133,8 +133,12 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				var result = JsonConvert.DeserializeObject<ResObjectG12<UserInfo>>(res.Content.ReadAsStringAsync().Result);
 				if (result.Code == 200 && result.Data != null)
 				{
-
-					return Ok(result.Data.Token);
+					var response = new
+					{
+						UserId = result.Data.Id,
+						Authorization = result.Data.Token
+					};
+					return Ok(response);
 				}
 			}
 
@@ -146,22 +150,10 @@ namespace Elearning.G8.Exam.Testing.Controllers
 
 		public async Task<ActionServiceResult> GetTranscript(string contestID)
 		{
-			StringValues clientIDHeader,authorization;
+			StringValues clientIDHeader;
 			Request.Headers.TryGetValue("ClientID", out clientIDHeader);
-			Request.Headers.TryGetValue("Authorization", out authorization);
 			var clientID = clientIDHeader.FirstOrDefault().ToString();
-			var abc= authorization.FirstOrDefault().ToString();
-			var handler = new JwtSecurityTokenHandler();
-
-			var jsonToken = handler.ReadJwtToken(abc);
-			var a = jsonToken.Claims;
-
-			foreach(var claim in a)
-			{
-				var c = claim.Value;
-				var d = claim.ValueType;
-			}
-			//var list = JsonConvert.DeserializeObject<TokenInfo>(jsonToken.Claims.ToString());
+			
 			var result = new ActionServiceResult();
 			Console.WriteLine();
 			if (clientID == null || clientID.Trim() != "714b320c-1046-4e37-a3c3-20bc6fcac014" || String.IsNullOrEmpty(clientID))

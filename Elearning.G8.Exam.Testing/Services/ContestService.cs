@@ -17,17 +17,27 @@ namespace Elearning.G8.Exam.Testing.Services
 		private readonly IBaseRepository<Contest> _contestBaseRepository;
 		private readonly IBaseRepository<Examination> _examBaseRepository;
 		private readonly IBaseRepository<Transcript> _transcriptBaseRepository;
+		private readonly IBaseRepository<User> _userBaseRepository;
 
 		private readonly IExamService _examService;
 		private readonly IMapper _mapper;
+		private readonly Dictionary<string, string> _role;
 
-		public ContestService(IContestRepository contestRepo, IBaseRepository<Contest> baseRepository, IBaseRepository<Examination> examBaseRepository, IBaseRepository<Transcript> transcriptBaseRepository, IMapper mapper)
+		public ContestService(IContestRepository contestRepo, IBaseRepository<Contest> baseRepository, IBaseRepository<Examination> examBaseRepository, IBaseRepository<Transcript> transcriptBaseRepository, IMapper mapper, IExamService examService, IBaseRepository<User> userBaseRepository)
 		{
 			_contestRepo = contestRepo;
 			_contestBaseRepository = baseRepository;
 			_examBaseRepository = examBaseRepository;
 			_transcriptBaseRepository = transcriptBaseRepository;
 			_mapper = mapper;
+			_examService = examService;
+			_userBaseRepository = userBaseRepository;
+
+			_role = new Dictionary<string, string>()
+			{
+				{ "01014640-4992-8450-3665-126150814651","lecture"},
+				{"01625518-9205-2988-5145-017982868048","student" }
+			};
 		}
 
 
@@ -52,7 +62,7 @@ namespace Elearning.G8.Exam.Testing.Services
 		/// <param name="sizePage"></param>
 		/// <param name="keyword"></param>
 		/// <returns></returns>
-		public async Task<ActionServiceResult> CheckScreen(string userID, string contestID, string roleName)
+		public async Task<ActionServiceResult> CheckScreen(string userID, string contestID)
 		{
 			var res = new ActionServiceResult();
 			var result = await _contestBaseRepository.GetEntityByIdAsync(contestID);
@@ -63,49 +73,80 @@ namespace Elearning.G8.Exam.Testing.Services
 			}
 			else
 			{
+				var user =await  _userBaseRepository.GetEntityByIdAsync(userID);
+				if (user == null)
+				{
+					return null;
+				}
+
+				var roleName = string.IsNullOrEmpty(_role.GetValueOrDefault(user.RoleId.ToString()))?"student": _role.GetValueOrDefault(user.RoleId.ToString());
+
 				var contestDTO = new ContestDTO();
 				var exams = _examBaseRepository.GetEntitites("Proc_GetExamByContestID", new object[] { contestID }).Result.ToList();
 				var exam = exams.Where(item => item.UserId == Guid.Parse(userID)).FirstOrDefault();
-				if (DateTime.Compare(Utils.GetNistTime(), result.StartTime) < 0)
-				{
-					//Tao de thi
-					var exam_new = await _examService.CreateExam(contestID, userID);
-					await _examBaseRepository.AddAsync(exam_new);
-					return new ActionServiceResult(true, "Chưa đến thời gian làm bài", Code.NotTimeToDo, exam.ExamId, 0);
-				}
 
-				else if (DateTime.Compare(Utils.GetNistTime(), result.FinishTime) > 0)
+				if (roleName.Equals("student"))
 				{
-					contestDTO.ExamID = exam.ExamId;
-					contestDTO.Continue = 2;
-					return new ActionServiceResult(true, "Đã hết thời gian làm bài", Code.TimeOut, contestDTO, 1);
-				}
-				else
-				{
-					if (exam == null)
+					
+					if (DateTime.Compare(Utils.GetNistTime(), result.StartTime) < 0)
 					{
-						contestDTO.Continue = 0;
-
+						//Tao de thi
 						var exam_new = await _examService.CreateExam(contestID, userID);
-						await _examBaseRepository.AddAsync(exam_new);
-						contestDTO.ExamID = exam_new.ExamId;
-						//Tao bai thi
+						await _examBaseRepository.AddAsync(exam_new, true);
+						return new ActionServiceResult(true, "Chưa đến thời gian làm bài", Code.NotTimeToDo, exam.ExamId, 0);
+					}
+
+					else if (DateTime.Compare(Utils.GetNistTime(), result.FinishTime) > 0)
+					{
+						contestDTO.ExamID = exam.ExamId;
+						contestDTO.Continue = 2;
+						return new ActionServiceResult(true, "Đã hết thời gian làm bài", Code.TimeOut, contestDTO, 0);
 					}
 					else
 					{
-						contestDTO.ExamID = exam.ExamId;
-						if (exam.IsDoing == 1 && DateTime.Compare(Utils.GetNistTime(), exam.ModifiedDate.Value) > 0 && exam.Status == 0)
+						if (exam == null)
 						{
-							contestDTO.Continue = 1;
+							contestDTO.Continue = 0;
+
+							var exam_new = await _examService.CreateExam(contestID, userID);
+							await _examBaseRepository.AddAsync(exam_new, true);
+							contestDTO.ExamID = exam_new.ExamId;
+							//Tao bai thi
 						}
-						if (exam.Status == 1)
+						else
 						{
-							contestDTO.Continue = 2;
+							contestDTO.ExamID = exam.ExamId;
+							if (exam.IsDoing == 1 && DateTime.Compare(Utils.GetNistTime(), exam.ModifiedDate.Value) > 0 && exam.Status == 0)
+							{
+								contestDTO.Continue = 1;
+							}
+							if (exam.Status == 1)
+							{
+								contestDTO.Continue = 2;
+							}
 						}
 					}
+
+					res.Data = contestDTO;
+				}
+				else
+				{
+					if(DateTime.Compare(Utils.GetNistTime(),result.FinishTime) < 0)
+					{
+						var data = new
+						{
+							NumOfJoining = exams.Count(item => item.IsDoing == 1)
+						};
+						return new ActionServiceResult(true, "Đang trong thời gian làm bài", (Code)1001, data, 0);
+					}
+					else
+					{
+						return new ActionServiceResult(true, "", (Code)1001, exams, 0);
+					}
+					
 				}
 
-				res.Data = contestDTO;
+				
 			}
 
 			return res;

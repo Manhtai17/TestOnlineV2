@@ -2,6 +2,7 @@
 using Elearning.G8.Exam.Testing.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
@@ -14,10 +15,13 @@ namespace Elearning.G8.Exam.Testing.Controllers
 	{
 		private readonly IContestService _contestService;
 		private readonly IBaseEntityService<Contest> _baseEntityService;
+
 		public ContestsController(IBaseEntityService<Contest> baseEntityService, IContestService contestService)
 		{
 			_contestService = contestService;
 			_baseEntityService = baseEntityService;
+
+			
 		}
 
 
@@ -58,7 +62,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			}
 			else
 			{
-				var response = await _contestService.CheckScreen(userID,contestID,"student");
+				var response = await _contestService.CheckScreen(userID,contestID);
 				result.Data = response;
 			}
 			return result;
