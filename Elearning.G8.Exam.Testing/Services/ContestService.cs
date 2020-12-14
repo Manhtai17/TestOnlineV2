@@ -98,7 +98,19 @@ namespace Elearning.G8.Exam.Testing.Services
 
 					else if (DateTime.Compare(Utils.GetNistTime(), result.FinishTime) > 0)
 					{
-						contestDTO.ExamID = exam.ExamId;
+						if (exam == null)
+						{
+							var exam_new = await _examService.CreateExam(contestID, userID);
+							exam_new.Status = 1;
+							exam_new.Point = 0;
+							exam_new.CreatedDate = exam_new.ModifiedDate = Utils.GetNistTime();
+							await _examBaseRepository.AddAsync(exam_new, true);
+							contestDTO.ExamID = exam_new.ExamId;
+						}
+						else
+						{
+							contestDTO.ExamID = exam.ExamId;
+						}
 						contestDTO.Continue = 2;
 						return new ActionServiceResult(true, "Đã hết thời gian làm bài", Code.TimeOut, contestDTO, 0);
 					}
@@ -107,7 +119,6 @@ namespace Elearning.G8.Exam.Testing.Services
 						if (exam == null)
 						{
 							contestDTO.Continue = 0;
-
 							var exam_new = await _examService.CreateExam(contestID, userID);
 							await _examBaseRepository.AddAsync(exam_new, true);
 							contestDTO.ExamID = exam_new.ExamId;

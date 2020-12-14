@@ -87,7 +87,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 					//update db
 					result.Data.RoleId = Guid.Parse("01625518-9205-2988-5145-017982868048");
 					await _baseUserService.Insert(result.Data);
-					return Ok(result.Data.Id);
+					return Ok(result.Data.UserID);
 				}
 			}
 

@@ -10,6 +10,7 @@ namespace Elearning.G8.Exam.ApplicationCore
 		public DateTime StartTime { get; set; }
 		public int TimeToDo { get; set; }
 		public DateTime FinishTime { get; set; }
+		public int IntegrationContestID { get; set; }
 
 	}
 }

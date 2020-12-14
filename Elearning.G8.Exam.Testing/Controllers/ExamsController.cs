@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
 
@@ -175,28 +177,77 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				}
 				else
 				{
-					if (exam.IsDoing == 1)
+					var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
+					if (DateTime.Compare(Utils.GetNistTime(),contest.FinishTime) >= 0)
 					{
-						if ((Utils.GetNistTime() - exam.ModifiedDate.Value).TotalSeconds > 15)
-						{
-							exam.ModifiedDate = Utils.GetNistTime();
-							await _baseEntityService.Update(exam);
+						exam.IsDoing = null;
+						exam.Result = null;
+						exam.Status = null;
 
-							return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
-						}
-						else
-						{
-							return new ActionServiceResult() { Success = true, Code = Code.IsDoing, Data = null };
-						}
-						
+					}
+					else if (DateTime.Compare(Utils.GetNistTime(), contest.StartTime) < 0)
+					{
+						return null;
 					}
 					else
 					{
-						exam.IsDoing = 1;
-						exam.CreatedDate = Utils.GetNistTime();
-						exam.ModifiedDate = Utils.GetNistTime();
-						await _baseEntityService.Update(exam);
+						if (exam.Status == 0)
+						{
+							if (exam.IsDoing == 1)
+							{
+								Stopwatch timer = new Stopwatch();
+
+								timer.Start();
+
+								var now = Utils.GetNistTime();
+
+								timer.Stop();
+
+								var timeTaken = timer.Elapsed.TotalSeconds;
+								if ((now - exam.ModifiedDate.Value).TotalSeconds - timeTaken > 15)
+								{
+									if (exam.StartAgain == null)
+									{
+										if (exam.TimeUsing == 0)
+										{
+											exam.TimeUsing = (exam.ModifiedDate.Value - exam.CreatedDate.Value).TotalMinutes;
+											exam.StartAgain = exam.ModifiedDate=now;
+										}
+									}
+									else
+									{
+										exam.TimeUsing += (exam.ModifiedDate.Value - exam.StartAgain.Value).TotalMinutes;
+										exam.StartAgain =exam.ModifiedDate= now;
+									}
+									 
+									exam.ModifiedDate = Utils.GetNistTime();
+									await _baseEntityService.Update(exam);
+
+									return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
+								}
+								else
+								{
+									return new ActionServiceResult() { Success = true, Code = Code.IsDoing, Data = null };
+								}
+
+							}
+							else
+							{
+								exam.IsDoing = 1;
+								exam.CreatedDate = Utils.GetNistTime();
+								exam.ModifiedDate = Utils.GetNistTime();
+								await _baseEntityService.Update(exam);
+							}
+						}
+						else
+						{
+							exam.IsDoing = null;
+							exam.Result = null;
+							exam.Status = null;
+						}
+						
 					}
+					
 					return new ActionServiceResult() { Success=true,Code = Code.Success,Data = exam };
 				}
 

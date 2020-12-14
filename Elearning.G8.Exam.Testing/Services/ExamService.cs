@@ -105,7 +105,12 @@ namespace Elearning.G8.Exam.Testing.Services
 			var examRes = new Examination();
 			using (var httpClient = new HttpClient())
 			{
-				var url = new Uri("http://qbms-public-api.azurewebsites.net/api/Exam/GetExam/3");
+				var contest =await  _contestRepo.GetEntityByIdAsync(contestID);
+				if (contest == null)
+				{
+					return null;
+				}
+				var url = new Uri($"http://qbms-public-api.azurewebsites.net/api/Exam/GetExam/ {contest.IntegrationContestID}");
 				httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 				var content = await httpClient.GetAsync(url);
 

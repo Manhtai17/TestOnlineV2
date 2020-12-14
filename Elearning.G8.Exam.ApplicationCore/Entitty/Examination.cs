@@ -17,6 +17,12 @@ namespace Elearning.G8.Exam.ApplicationCore
 		public string Question { get; set; }
 		public string Answer { get; set; }
 		public string Result { get; set; }
+		/// <summary>
+		/// Thời gian đã làm bài
+		/// </summary>
+		public double TimeUsing { get; set; } = 0;
+		public DateTime? StartAgain { get; set; }
+
 
 	}
 }
