@@ -99,7 +99,6 @@ namespace Elearning.G8.Exam.Testing.Services
 
 		public async Task<Examination> CreateExam(string contestID, string userID)
 		{
-
 			//Handle goi api tao de thi tu nhom 10
 			var listQ = new List<Question>();
 			var examRes = new Examination();
@@ -169,6 +168,7 @@ namespace Elearning.G8.Exam.Testing.Services
 					examRes.ExamId = Guid.NewGuid();
 					examRes.UserId = Guid.Parse(userID);
 					examRes.Question = JsonConvert.SerializeObject(listQ);
+
 					examRes.Answer = strAnswerCorrect;
 				}
 				else
