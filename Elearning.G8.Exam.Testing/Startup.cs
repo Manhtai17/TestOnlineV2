@@ -29,16 +29,14 @@ namespace Elearning.G8.Exam.Testing
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddCors(options => options.AddPolicy("AllowAllCors", builder =>
+			services.AddCors(options =>
 			{
-				builder
-				.AllowAnyOrigin()
-				.AllowAnyMethod()
-				.AllowAnyHeader()
-				.AllowCredentials();
-
-			})
-			);
+				options.AddPolicy(name: AllowdOrigins,
+								  builder =>
+								  {
+									  builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+								  });
+			});
 
 			DatabaseContext.ConnectionString = "server = 104.248.149.21; port = 32267; user =root; password =12345678@Abc	; database =g8_db";
 			//DatabaseContext.ConnectionString = "server = localhost;port=3306; user =root; password =1234	; database =elearning";
@@ -91,7 +89,7 @@ namespace Elearning.G8.Exam.Testing
 			{
 				app.UseDeveloperExceptionPage();
 			}
-			app.UseCors("AllowAllCors");
+			app.UseCors();
 
 			//app.Use(async (context, next) =>
 			//{
