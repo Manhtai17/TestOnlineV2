@@ -156,8 +156,13 @@ namespace Elearning.G8.Exam.Testing.Services
 					if (DateTime.Compare(Utils.GetNistTime(), result.StartTime) < 0)
 					{
 						//Tao de thi
-						var exam_new = await _examService.CreateExam(contestID, userID);
-						await _examBaseRepository.AddAsync(exam_new, true);
+						if (exam == null)
+						{
+							var exam_new = await _examService.CreateExam(contestID, userID);
+							await _examBaseRepository.AddAsync(exam_new, true);
+							exam = exam_new;
+						}
+						
 						return new ActionServiceResult(true, "Chưa đến thời gian làm bài", Code.NotTimeToDo, exam.ExamId, 0);
 					}
 
