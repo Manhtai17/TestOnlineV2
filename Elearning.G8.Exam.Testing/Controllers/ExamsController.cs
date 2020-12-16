@@ -297,6 +297,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				}
 				exam.Question = oldExam.Question;
 				exam.Answer = oldExam.Answer;
+				exam.CreatedDate = oldExam.CreatedDate;
 				if(DateTime.Compare(Utils.GetNistTime(),contest.FinishTime) <= 0)
 				{
 					if (exam.Status == 0)
