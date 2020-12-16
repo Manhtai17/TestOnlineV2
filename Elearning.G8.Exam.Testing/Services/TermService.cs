@@ -76,9 +76,18 @@ namespace Elearning.G8.Exam.Testing.Services
 									TermName = resp.Subject_name
 								};
 								terms.Add(term);
-								
-								await _baseRepository.AddAsync(term,true);
-								await _baseUserTermRepository.AddAsync(new Userterm() { TermId = term.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() },true);
+								var existterm =( await _baseRepository.GetEntitites("Proc_GetTermByTermCode", new object[] { term.TermCode})).FirstOrDefault();
+								if (existterm == null)
+								{
+									await _baseRepository.AddAsync(term,true);
+									await _baseUserTermRepository.AddAsync(new Userterm() { TermId = term.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() },true);
+
+								}
+								else
+								{
+									await _baseUserTermRepository.AddAsync(new Userterm() { TermId = existterm.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() }, true);
+
+								}
 							}
 							return new ActionServiceResult()
 							{
