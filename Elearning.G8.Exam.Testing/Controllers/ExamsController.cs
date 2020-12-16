@@ -282,6 +282,21 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			else
 			{
 				var contest =await _contestRepo.GetEntityByIdAsync(exam.ContestId);
+				var oldExam = await _baseEntityService.GetEntityById(exam.ExamId);
+
+				if (contest == null || oldExam == null)
+				{
+					return new ActionServiceResult
+					{
+						Code = Code.Exception,
+						Data = null,
+						Message = "Entity null",
+						Success = false
+
+					};
+				}
+				exam.Question = oldExam.Question;
+				exam.Answer = oldExam.Answer;
 				if(DateTime.Compare(Utils.GetNistTime(),contest.FinishTime) <= 0)
 				{
 					if (exam.Status == 0)

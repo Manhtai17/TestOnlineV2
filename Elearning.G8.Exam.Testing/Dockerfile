@@ -21,4 +21,6 @@ RUN dotnet publish "Elearning.G8.Exam.Testing.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN unlink /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
+COPY ./Elearning.G8.Exam.Testing/timezone /etc/timezone
 ENTRYPOINT ["dotnet", "Elearning.G8.Exam.Testing.dll"]

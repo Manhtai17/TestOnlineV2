@@ -7,21 +7,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{85F0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elearning.G8.Exam", "Elearning.G8.Exam", "{18AF83DF-44ED-4DC5-9E9E-B23DB38A0039}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Exam.Testing", "Elearning.G8.Exam.Testing\Elearning.G8.Exam.Testing.csproj", "{2700C54D-3661-4917-8599-D95F1A22D47A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elearning.G8.Exam.Testing", "Elearning.G8.Exam.Testing\Elearning.G8.Exam.Testing.csproj", "{2700C54D-3661-4917-8599-D95F1A22D47A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Exam.ApplicationCore", "Elearning.G8.Exam.ApplicationCore\Elearning.G8.Exam.ApplicationCore.csproj", "{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elearning.G8.Exam.ApplicationCore", "Elearning.G8.Exam.ApplicationCore\Elearning.G8.Exam.ApplicationCore.csproj", "{F810E79B-BAE2-4F4C-BBF7-93915EB0B841}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Exam.Infracstructure", "Elearning.G8.Exam.Infracstructure\Elearning.G8.Exam.Infracstructure.csproj", "{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elearning.G8.Exam.Infracstructure", "Elearning.G8.Exam.Infracstructure\Elearning.G8.Exam.Infracstructure.csproj", "{B7643474-AE4E-4A40-BCF0-8EB0F87E0DBD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{899248DE-2FB1-467A-9B4B-D6D645D6CBEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Common.Kafka", "Elearning.G8.Common.Kafka\Elearning.G8.Common.Kafka.csproj", "{0260E070-987C-4440-B116-30E267AD7896}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elearning.G8.Common.Kafka", "Elearning.G8.Common.Kafka\Elearning.G8.Common.Kafka.csproj", "{0260E070-987C-4440-B116-30E267AD7896}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{31545F39-B716-478E-9271-E6F2D7B4D62C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.Worker.WorkerService", "Elearning.G8.Worker.WorkerService\Elearning.G8.Worker.WorkerService.csproj", "{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elearning.G8.Worker.WorkerService", "Elearning.G8.Worker.WorkerService\Elearning.G8.Worker.WorkerService.csproj", "{A585AC88-1B18-4429-8ECD-7D2C7E6D9BF0}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9EC259B5-6A44-4577-B678-6D184DEFC4A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elearning.G8.UI", "Elearning.G8.UI\Elearning.G8.UI.csproj", "{96BAA945-80E9-489B-B4D2-EC9B236007FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EC259B5-6A44-4577-B678-6D184DEFC4A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96BAA945-80E9-489B-B4D2-EC9B236007FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96BAA945-80E9-489B-B4D2-EC9B236007FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96BAA945-80E9-489B-B4D2-EC9B236007FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96BAA945-80E9-489B-B4D2-EC9B236007FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
