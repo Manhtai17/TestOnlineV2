@@ -132,7 +132,7 @@ namespace Elearning.G8.Exam.Testing.Services
 		{
 			try
 			{
-				var result =await _baseRepository.GetEntitites("Proc_GetTermByID", new object[] { termID });
+				var result = await _baseRepository.GetEntityByIdAsync(termID);
 				var contest = await _baseContestRepository.GetEntitites("Proc_GetContestsByTermID", new object[] {termID,1,99,null });
 				return new ActionServiceResult()
 				{

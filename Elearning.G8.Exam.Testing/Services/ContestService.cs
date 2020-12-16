@@ -3,9 +3,11 @@ using Elearning.G8.Exam.ApplicationCore;
 using Elearning.G8.Exam.Infrastructure.Repository.Interfaces;
 using Elearning.G8.Exam.Testing.Interfaces;
 using Elearning.G8.Exam.Testing.Utility;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
 
@@ -16,6 +18,7 @@ namespace Elearning.G8.Exam.Testing.Services
 		private readonly IContestRepository _contestRepo;
 		private readonly IBaseRepository<Contest> _contestBaseRepository;
 		private readonly IBaseRepository<Examination> _examBaseRepository;
+		private readonly IBaseRepository<Term> _termBaseRepository;
 		private readonly IBaseRepository<Transcript> _transcriptBaseRepository;
 		private readonly IBaseRepository<User> _userBaseRepository;
 
@@ -23,7 +26,7 @@ namespace Elearning.G8.Exam.Testing.Services
 		private readonly IMapper _mapper;
 		private readonly Dictionary<string, string> _role;
 
-		public ContestService(IContestRepository contestRepo, IBaseRepository<Contest> baseRepository, IBaseRepository<Examination> examBaseRepository, IBaseRepository<Transcript> transcriptBaseRepository, IMapper mapper, IExamService examService, IBaseRepository<User> userBaseRepository)
+		public ContestService(IContestRepository contestRepo, IBaseRepository<Contest> baseRepository, IBaseRepository<Examination> examBaseRepository, IBaseRepository<Transcript> transcriptBaseRepository, IMapper mapper, IExamService examService, IBaseRepository<User> userBaseRepository, IBaseRepository<Term> termBaseRepository)
 		{
 			_contestRepo = contestRepo;
 			_contestBaseRepository = baseRepository;
@@ -38,14 +41,76 @@ namespace Elearning.G8.Exam.Testing.Services
 				{ "01014640-4992-8450-3665-126150814651","lecture"},
 				{"01625518-9205-2988-5145-017982868048","student" }
 			};
+			_termBaseRepository = termBaseRepository;
 		}
 
 
 
-		public Task<IEnumerable<Contest>> GetByTermID(string termID, int indexPage, int sizePage, string keyword)
+		public async Task<IEnumerable<Contest>> GetByTermID(string termID, int indexPage, int sizePage, string keyword)
 		{
+
 			var result = _contestRepo.GetByTermID(termID, indexPage, sizePage, keyword);
-			return Task.FromResult(result);
+			var contests = new List<Contest>();
+			if (result.Count() == 0)
+			{
+				//Thuc hien call ben kia ve
+				var term = await _termBaseRepository.GetEntityByIdAsync(termID);
+				if (term == null)
+				{
+					return null;
+				}
+				else
+				{
+					var inteTerm = term.IntegrationTermID;
+					var baseUrl = String.Format("http://qbms-public-api.azurewebsites.net/");
+					var url = new Uri(baseUrl+$"api/Contest/GetContestBySubjectCode/{inteTerm}");
+
+					var httpClient = new HttpClient();
+
+					var jsonSettings = new JsonSerializerSettings()
+					{
+						ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+						NullValueHandling = NullValueHandling.Ignore,
+
+					};
+
+					var res = (await httpClient.GetAsync(url));
+
+					if (res.StatusCode == System.Net.HttpStatusCode.OK)
+					{
+						var response = JsonConvert.DeserializeObject<G10Res<List<G10ContestByTerm>>>(res.Content.ReadAsStringAsync().Result);
+
+						if (response.Status)
+						{
+							foreach (var resp in response.Data)
+							{
+								var contest = new Contest()
+								{
+									TermId = Guid.Parse(termID),
+									ContestName = resp.ContestName,
+									FinishTime = resp.FinishTime,
+									StartTime = resp.StartTime,
+									ContestId = Guid.NewGuid(),
+									IntegrationContestID = resp.Id,
+									TimeToDo = resp.TimeToDo
+								};
+								
+								var existContest = (await _contestBaseRepository.GetEntitites("Proc_GetContestByIntegrationId", new object[] { contest.IntegrationContestID })).FirstOrDefault();
+								if (existContest == null)
+								{
+									await _contestBaseRepository.AddAsync(contest, true);
+								}
+								contests.Add(existContest??contest);
+								
+							}
+							return contests;
+						}
+					}
+				}
+			}
+
+
+			return result;
 		}
 
 		public Task<int> GetTotalRecords(string termID, string keyword)
@@ -73,13 +138,13 @@ namespace Elearning.G8.Exam.Testing.Services
 			}
 			else
 			{
-				var user =await  _userBaseRepository.GetEntityByIdAsync(userID);
+				var user = await _userBaseRepository.GetEntityByIdAsync(userID);
 				if (user == null)
 				{
 					return null;
 				}
 
-				var roleName = string.IsNullOrEmpty(_role.GetValueOrDefault(user.RoleId.ToString()))?"student": _role.GetValueOrDefault(user.RoleId.ToString());
+				var roleName = string.IsNullOrEmpty(_role.GetValueOrDefault(user.RoleId.ToString())) ? "student" : _role.GetValueOrDefault(user.RoleId.ToString());
 
 				var contestDTO = new ContestDTO();
 				var exams = _examBaseRepository.GetEntitites("Proc_GetExamByContestID", new object[] { contestID }).Result.ToList();
@@ -87,7 +152,7 @@ namespace Elearning.G8.Exam.Testing.Services
 
 				if (roleName.Equals("student"))
 				{
-					
+
 					if (DateTime.Compare(Utils.GetNistTime(), result.StartTime) < 0)
 					{
 						//Tao de thi
@@ -142,7 +207,7 @@ namespace Elearning.G8.Exam.Testing.Services
 				}
 				else
 				{
-					if(DateTime.Compare(Utils.GetNistTime(),result.FinishTime) < 0)
+					if (DateTime.Compare(Utils.GetNistTime(), result.FinishTime) < 0)
 					{
 						var data = new
 						{
@@ -154,10 +219,10 @@ namespace Elearning.G8.Exam.Testing.Services
 					{
 						return new ActionServiceResult(true, "", (Code)1001, exams, 0);
 					}
-					
+
 				}
 
-				
+
 			}
 
 			return res;

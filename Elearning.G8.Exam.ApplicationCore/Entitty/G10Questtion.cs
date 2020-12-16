@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Elearning.G8.Exam.ApplicationCore
 {
@@ -34,5 +35,15 @@ namespace Elearning.G8.Exam.ApplicationCore
 		public string Title { get; set; }
 		public string SubjectName { get; set; }
 		public G10Questtion[] Questions { get; set; }
+	}
+
+	public class G10ContestByTerm
+	{
+		public int Id { get; set; }
+		public string ContestName { get; set; }
+		public DateTime StartTime { get; set; }
+
+		public DateTime FinishTime { get; set; }
+		public int TimeToDo { get; set; }
 	}
 }
