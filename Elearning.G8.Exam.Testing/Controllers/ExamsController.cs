@@ -266,7 +266,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			return new ActionServiceResult();
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("submit")]
 		public async Task<ActionServiceResult> SubmitExam(Examination exam)
 		{
