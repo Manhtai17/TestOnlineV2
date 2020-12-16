@@ -1,4 +1,6 @@
-﻿namespace Elearning.G8.Exam.ApplicationCore
+﻿using System;
+
+namespace Elearning.G8.Exam.ApplicationCore
 {
 	/// <summary>
 	///Bảng đ
@@ -9,5 +11,7 @@
 		public string Name { get; set; }
 		public string Class { get; set; }
 		public string UserCode { get; set; }
+
+		public DateTime DateOfBirth { get; set; }
 	}
 }
