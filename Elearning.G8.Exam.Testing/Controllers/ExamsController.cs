@@ -281,47 +281,63 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			}
 			else
 			{
-				if (exam.Status == 0)
+				var contest =await _contestRepo.GetEntityByIdAsync(exam.ContestId);
+				if(DateTime.Compare(Utils.GetNistTime(),contest.FinishTime) <= 0)
 				{
-					exam.ModifiedDate = Utils.GetNistTime();
-					var message = JsonConvert.SerializeObject(exam);
-					using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
+					if (exam.Status == 0)
 					{
-						await producer.SendMessage(message);
-					}
-					return new ActionServiceResult()
-					{
-						Success = true,
-						Code = Code.Success,
-						Message = Resources.Success,
-						Data = exam.ExamId
-					};
-				}
-				else
-				{
-					var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
-					if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)
-					{
-						//Todo tinh diem
-						exam.Point = 10;
-						exam.IsDoing = 0;
-						exam.Status = 1;
 						exam.ModifiedDate = Utils.GetNistTime();
-						await _baseEntityService.Update(exam);
-						result.Data = exam.ExamId;
+						var message = JsonConvert.SerializeObject(exam);
+						using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
+						{
+							await producer.SendMessage(message);
+						}
+						return new ActionServiceResult()
+						{
+							Success = true,
+							Code = Code.Success,
+							Message = Resources.Success,
+							Data = exam.ExamId
+						};
 					}
 					else
 					{
-						return new ActionServiceResult
+						//var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
+						if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)
 						{
-							Code = Code.NotFound,
-							Data = null,
-							Message = Resources.NotFound,
-							Success = false
+							//Todo tinh diem
+							exam.Point = 10;
+							exam.IsDoing = 0;
+							exam.Status = 1;
+							exam.ModifiedDate = Utils.GetNistTime();
+							await _baseEntityService.Update(exam);
+							result.Data = exam.ExamId;
+						}
+						else
+						{
+							return new ActionServiceResult
+							{
+								Code = Code.NotFound,
+								Data = null,
+								Message = Resources.NotFound,
+								Success = false
 
-						};
+							};
+						}
 					}
 				}
+				else
+				{
+					return new ActionServiceResult
+					{
+						Code = Code.TimeOut,
+						Data = null,
+						Message = "Hết thời gian làm bài",
+						Success = false
+
+					};
+				}
+				
 
 
 			}

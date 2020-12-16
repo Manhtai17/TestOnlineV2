@@ -43,7 +43,7 @@ namespace Elearning.G8.Exam.Testing.Utility
 			return DateTime.ParseExact(todaysDates,
 									   "ddd, dd MMM yyyy HH:mm:ss 'GMT'",
 									   CultureInfo.InvariantCulture.DateTimeFormat,
-									   DateTimeStyles.AssumeUniversal).AddHours(7);
+									   DateTimeStyles.AssumeUniversal);
 		}
 
 	}

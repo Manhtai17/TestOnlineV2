@@ -19,7 +19,7 @@ namespace Elearning.G8.Exam.WorkerService
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
-					DatabaseContext.ConnectionString = "server = localhost; port = 3306; user =root; password =1234	; database =elearning";
+					DatabaseContext.ConnectionString = "server = 104.248.149.21; port = 32267; user =root; password =12345678@Abc	; database =g8_db";
 					var configuration = hostContext.Configuration;
 					var consumerConfig = new ConsumerConfig();
 					configuration.Bind("Kafka:ConsumerConfig", consumerConfig);

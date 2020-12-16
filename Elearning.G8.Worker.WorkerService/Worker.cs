@@ -61,9 +61,11 @@ namespace Elearning.G8.Exam.WorkerService
 									}
 
 									var exam = JsonConvert.DeserializeObject<Examination>(message);
-									Console.WriteLine(exam.ExamId.ToString());
+									
 
 									var oldExam = (_examRepo.GetEntityByIdAsync(exam.ExamId).Result);
+
+									Console.WriteLine(oldExam.ExamId.ToString());
 
 									if (oldExam == null)
 									{
@@ -84,7 +86,7 @@ namespace Elearning.G8.Exam.WorkerService
 						}
 					});
 					t.Start();
-					await Task.Delay(1000, stoppingToken);
+					await Task.Delay(6000, stoppingToken);
 					_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 				}
 			}
