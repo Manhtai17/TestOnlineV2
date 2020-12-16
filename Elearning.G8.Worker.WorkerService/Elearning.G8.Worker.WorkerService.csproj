@@ -1,18 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>dotnet-Elearning.G8.Worker.WorkerService-4177AC64-839A-4575-B1F3-1044D34A6D83</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="timezone" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="timezone" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="1.4.4" />

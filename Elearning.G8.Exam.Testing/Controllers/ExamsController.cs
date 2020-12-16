@@ -317,7 +317,15 @@ namespace Elearning.G8.Exam.Testing.Controllers
 					}
 					else
 					{
-						//var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
+						if (oldExam.Status == 1)
+						{
+							return new ActionServiceResult()
+							{
+								Success=false,
+								Code=Code.SubmitDone,
+								Message = "Hệ thống đã ghi nhận bài làm trước đó"
+							};
+						}
 						if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)
 						{
 							//Todo tinh diem

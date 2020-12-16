@@ -76,7 +76,11 @@
 			/// <summary>
 			/// Đang có người thi
 			/// </summary>
-			IsDoing=604
+			IsDoing=604,
+			/// <summary>
+			/// Da ghi nhan submit truoc do
+			/// </summary>
+			SubmitDone=605
 		}
 	}
 }
