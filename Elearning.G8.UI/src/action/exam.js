@@ -18,6 +18,26 @@ export const fetchExam = (examId, userId) => {
 	};
 };
 
+export const fetchResult = (contestId, userId) => {
+	return (dispatch) => {
+		dispatch(fetchResultBegin());
+		let url = `http://apig8.toedu.me/api/Contests/ScoreStatistics?contestID=${contestId}`;
+
+		fetch(url, {
+			headers: {
+				userId: userId,
+			},
+		})
+			.then((res) => res.json())
+			.then((results) => {
+				dispatch(fetchResultSuccess(results.data));
+			})
+			.catch((error) => {
+				dispatch(fetchResultFailure(error.toString()));
+			});
+	};
+};
+
 export const submitExam = (
 	examId,
 	contestId,
@@ -46,8 +66,8 @@ export const submitExam = (
 			}),
 		})
 			.then((results) => {
-				// dispatch(fetchExamSuccess(results[1]));
 				dispatch(submitExamSuccess(10, 10));
+				dispatch(fetchResult(contestId, userId));
 			})
 			.catch((error) => {
 				dispatch(submitExamFailure(error.toString()));
@@ -92,6 +112,26 @@ export const submitExamSuccess = (score, count) => {
 export const submitExamFailure = (value) => {
 	return {
 		type: "SUBMIT_EXAM_FAILURE",
+		payload: value,
+	};
+};
+
+export const fetchResultSuccess = (result) => {
+	return {
+		type: "FETCH_RESULT_SUCCESS",
+		result: result,
+	};
+}
+
+export const fetchResultBegin = () => {
+	return {
+		type: "FETCH_RESULT_BEGIN",
+	};
+};
+
+export const fetchResultFailure = (value) => {
+	return {
+		type: "FETCH_RESULT_FAILURE",
 		payload: value,
 	};
 };

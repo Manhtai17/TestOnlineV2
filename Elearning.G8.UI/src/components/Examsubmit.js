@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 import { answersToString } from "./answersToString";
 
 function Examsubmit(props) {
-	const score = useSelector((state) => state.exam.score);
 	const submitLoading = useSelector((state) => state.exam.submitLoading);
 	const submitError = useSelector((state) => state.exam.submitError);
+	const resultLoading = useSelector((state) => state.exam.resultLoading);
+	const score = useSelector((state) => state.exam.result);
 	const result = answersToString(props.questions, props.answers);
 	const dispatch = useDispatch();
 
@@ -18,7 +19,7 @@ function Examsubmit(props) {
 		dispatch(
 			submitExam(props.examId, props.contestId, props.userId, 1, 0, result)
 		);
-	}, [dispatch, props.examId, props.contestId, props.userId]);
+	}, [dispatch, props.examId, props.contestId, props.userId, result]);
 
 	return (
 		<div className="Examsubmit">
@@ -45,7 +46,7 @@ function Examsubmit(props) {
 							Thử lại
 						</button>
 					</div>
-				) : submitLoading ? (
+				) : resultLoading || submitLoading || !score ? (
 					<div className="content content--loading">
 						<CircularProgress size={100} />
 						<div className="content--loading-text">Đang nộp bài</div>
@@ -56,7 +57,10 @@ function Examsubmit(props) {
 							<CheckCircleOutlinedIcon />
 							<p>Nộp bài hoàn tất!</p>
 						</div>
-						
+						<div className="content__score">
+							<p>{score.point}</p>
+							<span>/10</span>
+						</div>
 						<Link to="/" className="content__back">
 							Về trang chủ
 						</Link>

@@ -130,14 +130,44 @@ namespace Elearning.G8.Exam.Testing.Services
 						}
 						else
 						{
+							var tmpCorrect = "";
 							foreach (var answer in question.Answers)
 							{
-								if ((bool)(answer?.IsCorrect))
+								switch (question.Type)
 								{
-									strAnswerCorrect += "|" + (String.IsNullOrEmpty(answer.Content) ? ("None") : answer.Content);
+									case 1:
+										if (answer.IsCorrect)
+										{
+											strAnswerCorrect += "|" + "True";
+										}
+										else
+										{
+											strAnswerCorrect += "|" + "False";
+										}
+										break;
+									case 2:
+									case 3:
+										
+										if ((bool)(answer?.IsCorrect))
+										{
+											if (string.IsNullOrEmpty(tmpCorrect))
+											{
+												tmpCorrect = (String.IsNullOrEmpty(answer.Content) ? ("None") : answer.Content);
+											}
+											else
+											{
+												tmpCorrect += "#" + (String.IsNullOrEmpty(answer.Content) ? ("None") : answer.Content);
+											}
+											 
+										}
+										break;
+									default:
+										break;
 								}
+								
 								strA += "|" + answer.Content;
 							}
+							strAnswerCorrect += "|" + tmpCorrect;
 
 							var ques = new Question()
 							{

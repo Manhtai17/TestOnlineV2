@@ -19,12 +19,12 @@ function Start(props) {
 
 	useEffect(() => {
 		if (now) {
-			const open = new Date(props.exam.timeOpen);
+			const open = new Date(props.StartTime);
 			if (now < open) {
 				setTime(Math.abs(open - now) / 1000);
 			}
 		}
-	}, [props.exam.timeOpen, now]);
+	}, [props.StartTime, now]);
 
 	useEffect(() => {
 		const timer = setInterval(() => {

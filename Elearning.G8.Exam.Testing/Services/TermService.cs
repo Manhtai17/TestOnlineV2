@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
 
@@ -30,7 +29,7 @@ namespace Elearning.G8.Exam.Testing.Services
 			_baseUserTermRepository = baseUserTermRepository;
 		}
 
-		public async Task<ActionServiceResult> Paging(string userID, int pageIndex=1, int pageSize=99, string keyword=null)
+		public async Task<ActionServiceResult> Paging(string userID, int pageIndex = 1, int pageSize = 99, string keyword = null)
 		{
 			try
 			{
@@ -76,16 +75,35 @@ namespace Elearning.G8.Exam.Testing.Services
 									TermName = resp.Subject_name
 								};
 								terms.Add(term);
-								var existterm =( await _baseRepository.GetEntitites("Proc_GetTermByTermCode", new object[] { term.TermCode})).FirstOrDefault();
+								var existterm = (await _baseRepository.GetEntitites("Proc_GetTermByTermCode", new object[] { term.TermCode })).FirstOrDefault();
 								if (existterm == null)
 								{
-									await _baseRepository.AddAsync(term,true);
-									await _baseUserTermRepository.AddAsync(new Userterm() { TermId = term.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() },true);
+									var t = await _baseRepository.AddAsync(term, true);
+									if (t == null)
+									{
+										return new ActionServiceResult()
+										{
+											Success = false,
+											Code = Code.ErrorAddEntity,
+											Data = null,
+											Message = "Term code la duy nhat"
+										};
+									}
+									var existUserTerm = await _baseUserTermRepository.GetEntitites("Proc_GetUserTermByKey", new object[] { userID, term.TermCode });
+									if (existUserTerm.Count() == 0)
+									{
+										await _baseUserTermRepository.AddAsync(new Userterm() { TermId = term.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() }, true);
+									}
 
 								}
 								else
 								{
-									await _baseUserTermRepository.AddAsync(new Userterm() { TermId = existterm.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() }, true);
+									var existUserTerm = await _baseUserTermRepository.GetEntitites("Proc_GetUserTermByKey", new object[] { userID, term.TermCode });
+									if (existUserTerm.Count()==0)
+									{
+										await _baseUserTermRepository.AddAsync(new Userterm() { TermId = existterm.TermId, UserId = Guid.Parse(userID), UserTermId = Guid.NewGuid() }, true);
+
+									}
 
 								}
 							}
@@ -105,7 +123,7 @@ namespace Elearning.G8.Exam.Testing.Services
 					Data = result
 				};
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				var err = ex.Message;
 			}
@@ -133,21 +151,21 @@ namespace Elearning.G8.Exam.Testing.Services
 			try
 			{
 				var result = await _baseRepository.GetEntityByIdAsync(termID);
-				var contest = await _baseContestRepository.GetEntitites("Proc_GetContestsByTermID", new object[] {termID,1,99,null });
+				var contest = await _baseContestRepository.GetEntitites("Proc_GetContestsByTermID", new object[] { termID, 1, 99, null });
 				return new ActionServiceResult()
 				{
 					Success = true,
 					Code = Code.Success,
-					Data =  new
+					Data = new
 					{
 						Term = result,
 						Contests = contest
 					}
 				};
 			}
-			catch(Exception ex)
+			catch (Exception)
 			{
-				
+
 			}
 			return new ActionServiceResult()
 			{

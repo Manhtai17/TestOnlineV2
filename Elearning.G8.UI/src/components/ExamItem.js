@@ -7,20 +7,16 @@ import TimerOffOutlinedIcon from "@material-ui/icons/TimerOffOutlined";
 import Start from "./modals/Start";
 import { useHistory } from "react-router-dom";
 import Result from "./modals/Result";
-import { fetchTime } from "../action/time";
 
 function ExamItem(props) {
 	const [exam, setExam] = useState("");
-	const [examDetail, setExamDetail] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const [timeEnd, setTimeEnd] = useState("");
 	const [modalShow, setModalShow] = useState("false");
 	const userinfo = useSelector((state) => state.auth.userinfo);
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const timeError = useSelector((state) => state.time.timeError);
-	const now = useSelector((state) => new Date(state.time.time));
 
 	useEffect(() => {
 		let isMounted = true;
@@ -34,62 +30,22 @@ function ExamItem(props) {
 			.then((res) => res.json())
 			.then((result) => {
 				if (isMounted) {
+					setLoading(false);
+					setError(null);
 					setExam(result.data.data);
 				}
 			})
 			.catch((error) => {
 				if (isMounted) {
+					setLoading(false);
 					setError(error.toString());
+					setExam("");
 				}
 			});
 		return () => {
 			isMounted = false;
 		};
 	}, [dispatch, props.examId, userinfo.userID]);
-
-	useEffect(() => {
-		if (exam) {
-			let isMounted = true;
-			let url = `http://apig8.toedu.me/api/Exams/${exam.examID}`;
-
-			fetch(url, {
-				headers: {
-					userId: userinfo.userID,
-				},
-			})
-				.then((res) => res.json())
-				.then((result) => {
-					if (isMounted) {
-						setLoading(false);
-						setError(null);
-						setExamDetail(result.data);
-					}
-				})
-				.catch((error) => {
-					if (isMounted) {
-						setLoading(false);
-						setExamDetail("");
-						setError(error.toString());
-					}
-				});
-			return () => {
-				isMounted = false;
-			};
-		}
-	}, [exam, userinfo.userID]);
-
-	useEffect(() => {
-		dispatch(fetchTime());
-	}, [dispatch]);
-
-	useEffect(() => {
-		if (examDetail && exam) {
-			const created = new Date(examDetail.createdDate);
-			const modified = new Date(examDetail.modifiedDate.replace("+00:00", ""));
-			const timeSpent = Math.abs(modified - created) / 1000;
-			setTimeEnd(timeSpent >= exam.timeToDo * 60 ? false : true);
-		}
-	}, [examDetail, exam]);
 
 	const closeModal = () => {
 		setModalShow(false);
@@ -117,7 +73,7 @@ function ExamItem(props) {
 			)}
 			{error || timeError ? (
 				<div className="error">{error || timeError}</div>
-			) : loading || !exam || !examDetail || !now ? (
+			) : loading || !exam ? (
 				<CircularProgress className="loadingCircle" size={20} />
 			) : (
 				<React.Fragment>
@@ -136,27 +92,15 @@ function ExamItem(props) {
 							{`Thời gian làm bài: ${props.timeToDo} phút`}
 						</div>
 						<div className="body__right">
-							{!examDetail.status && examDetail.point ? (
-								<button className="body__right-score">
-									<InfoOutlinedIcon />
-									<span>{`Điểm: ${examDetail.point}`}</span>
+							{exam.continue === 0 ? (
+								<button
+									className="body__right-start"
+									onClick={() => openModal("start")}
+								>
+									<PlayCircleOutlineOutlinedIcon />
+									<span>Bắt đầu</span>
 								</button>
-							) : !timeEnd || exam.finishTime <= now ? (
-								examDetail.point ? (
-									<button
-										className="body__right-score"
-										onClick={() => openModal("result")}
-									>
-										<InfoOutlinedIcon />
-										<span>{`Điểm: ${examDetail.point}/10`}</span>
-									</button>
-								) : (
-									<button className="body__right-timeout">
-										<TimerOffOutlinedIcon />
-										<span>Quá hạn làm</span>
-									</button>
-								)
-							) : examDetail.point ? (
+							) : exam.continue === 1 ? (
 								<button
 									className="body__right-start"
 									onClick={() => {
@@ -166,13 +110,15 @@ function ExamItem(props) {
 									<PlayCircleOutlineOutlinedIcon />
 									<span>Làm tiếp</span>
 								</button>
+							) : exam.continue === 2 ? (
+								<button className="body__right-timeout">
+									<TimerOffOutlinedIcon />
+									<span>Đã đóng</span>
+								</button>
 							) : (
-								<button
-									className="body__right-start"
-									onClick={() => openModal("start")}
-								>
-									<PlayCircleOutlineOutlinedIcon />
-									<span>Bắt đầu</span>
+								<button className="body__right-score">
+									<InfoOutlinedIcon />
+									<span>Chưa mở</span>
 								</button>
 							)}
 						</div>

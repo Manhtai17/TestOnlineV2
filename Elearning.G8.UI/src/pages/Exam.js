@@ -66,7 +66,7 @@ function Exam() {
 						) : (
 							""
 						)}
-						{!exam.status || modalShow ? (
+						{exam.status !== 0 || modalShow ? (
 							<div className="container__alert">
 								<div className="container__alert-icon container__alert-icon--done">
 									<CheckCircleOutlineOutlinedIcon />

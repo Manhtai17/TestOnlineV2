@@ -5,6 +5,8 @@ const initialState = {
 	submitLoading: false,
 	submitError: null,
 	result: "",
+	resultLoading: false,
+	resultError: null,
 	answers: {},
 };
 
@@ -55,10 +57,27 @@ const examReducer = (state = initialState, action) => {
 				submitError: action.payload,
 			};
 		}
-		case "SET_RESULT": {
+		case "FETCH_RESULT_SUCCESS": {
 			return {
 				...state,
-				result: action.payload,
+				resultLoading: false,
+				resultError: null,
+				result: action.result,
+			};
+		}
+		case "FETCH_RESULT_BEGIN": {
+			return {
+				...state,
+				resultLoading: true,
+				resultError: null,
+			};
+		}
+		case "FETCH_RESULT_FAILURE": {
+			return {
+				...state,
+				resultLoading: false,
+				result: "",
+				resultError: action.payload,
 			};
 		}
 		case "SET_ANSWERS": {

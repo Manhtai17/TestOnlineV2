@@ -19,7 +19,7 @@ function Header() {
 					<Link to="/">
 						<img
 							className="navbar__left-logo"
-							src="https://lh3.googleusercontent.com/proxy/4k_T0ssc6sdJqxQck_XDvt4ope4QvWjfvoe5U2I5PTgoSsayYHcj9zmI9b8GCNFugYLWQ6i6-WNwcESJpFqaLJkoHGA"
+							src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsq0N58c2GvZpCKF5qaIAYk5uEgX1XJtA47A&usqp=CAU"
 							alt="uetlogo"
 						/>
 					</Link>

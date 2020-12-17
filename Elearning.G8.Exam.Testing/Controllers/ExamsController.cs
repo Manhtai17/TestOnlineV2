@@ -171,7 +171,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 						if (exam.Status == 0)
 						{
 							//Tinh diem 
-							exam.Point = 10;
+							exam.Point = Utils.TinhDiem(exam.Result, exam.Answer);
 							exam.Status = 1;
 							await _baseEntityService.Update(exam);
 						}
@@ -192,21 +192,23 @@ namespace Elearning.G8.Exam.Testing.Controllers
 							{
 								if (exam.IsDoing == 1)
 								{
-									var now = Utils.GetNistTime();
-									if ((now - exam.ModifiedDate.Value).TotalSeconds > 15)
+									var now = DateTime.Now;
+									if ((now - exam.ModifiedDate.Value).TotalSeconds > 10)
 									{
 										if (exam.StartAgain == null)
 										{
 											if (exam.TimeUsing == 0)
 											{
 												exam.TimeUsing += (exam.ModifiedDate.Value - exam.CreatedDate.Value).TotalSeconds / 60.0;
-												exam.StartAgain = exam.ModifiedDate = now;
+												exam.StartAgain = now;
+												exam.ModifiedDate = now;
 											}
 										}
 										else
 										{
 											exam.TimeUsing += (exam.ModifiedDate.Value - exam.StartAgain.Value).TotalSeconds / 60.0;
-											exam.StartAgain = exam.ModifiedDate = now;
+											exam.StartAgain = now;
+											exam.ModifiedDate = now;
 										}
 
 										await _baseEntityService.Update(exam);
@@ -237,6 +239,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 						else
 						{
 							//Tinh diem 
+							exam.Point = Utils.TinhDiem(exam.Result, exam.Answer);
 							exam.Status = 1;
 							await _baseEntityService.Update(exam);
 							return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
@@ -304,6 +307,8 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			exam.Answer = oldExam.Answer;
 			exam.CreatedDate = oldExam.CreatedDate;
 			exam.ModifiedDate = DateTime.Now;
+			exam.StartAgain = oldExam.StartAgain;
+
 
 			if (oldExam != null && oldExam.Status == 1)
 			{
@@ -326,10 +331,10 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				//Con thoi gian lam bai
 				if (totaltimes < contest.TimeToDo)
 				{
-					//thuc hien tinh diem
+					
 					if (exam.Status == 0)
 					{
-						exam.Point =11;
+						exam.Point =Utils.TinhDiem(exam.Result, oldExam.Answer);
 						//tinh diem
 						var message = JsonConvert.SerializeObject(exam);
 						using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
@@ -345,13 +350,13 @@ namespace Elearning.G8.Exam.Testing.Controllers
 							Data = new
 							{
 								ExamID = exam.ExamId,
-								Point = 10
+								Point = exam.Point
 							}
 						};
 					}
 					else
 					{
-						exam.Point = 11;
+						exam.Point = Utils.TinhDiem(exam.Result, oldExam.Answer);
 						//tinh diem
 						await _baseEntityService.Update(exam);
 						return new ActionServiceResult()
@@ -362,7 +367,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 							Data = new
 							{
 								ExamID = exam.ExamId,
-								Point = 10
+								Point = exam.Point
 							}
 						};
 					}
@@ -373,7 +378,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				{
 					exam.Status = 1;
 					//tinh diem
-					exam.Point = 11;
+					exam.Point = Utils.TinhDiem(exam.Result, oldExam.Answer);
 					await _baseEntityService.Update(exam);
 					return new ActionServiceResult()
 					{
@@ -383,7 +388,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 						Data = new
 						{
 							ExamID = exam.ExamId,
-							Point = 10
+							Point = exam.Point
 						}
 					};
 
@@ -393,7 +398,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				{
 					exam.Status = 1;
 					//exam.Point = oldExam.Point;
-					exam.Point = 11;
+					exam.Point = Utils.TinhDiem(exam.Result, oldExam.Answer);
 					await _baseEntityService.Update(exam);
 					return new ActionServiceResult()
 					{
@@ -403,7 +408,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 						Data = new
 						{
 							ExamID = exam.ExamId,
-							Point = 10
+							Point = exam.Point
 						}
 					};
 				}
@@ -411,7 +416,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 
 
 			}
-			exam.Point = 11;
+			exam.Point = Utils.TinhDiem(exam.Result, oldExam.Answer); ;
 			//Tinh diem oldexam
 			return new ActionServiceResult
 			{

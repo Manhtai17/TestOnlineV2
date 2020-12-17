@@ -47,5 +47,46 @@ namespace Elearning.G8.Exam.Testing.Utility
 			return DateTime.Now;
 		}
 
+
+		public static int TinhDiem(string answer, string result)
+		{
+			var point = 0;
+			var arranswer = answer.Trim().Remove(0).Remove(answer.Last()).Split("|");
+			
+			var arrresult = result.Trim().Remove(0).Remove(result.Last()).Split("|");
+
+			for (var i = 0; i < arranswer.Length; i++)
+			{
+				var tmparr = arranswer[i].Split("#");
+				var tmparr2 = arrresult[i].Split("#");
+				if(tmparr.Length!= tmparr2.Length)
+				{
+					i++;
+				}
+				else
+				{
+					var flag = 0;
+					for(var j = 0; j < tmparr.Length; j++)
+					{
+						if (!tmparr[j].Trim().ToLower().Equals(tmparr2[j].Trim().ToLower()))
+						{
+							break;
+						}
+						else
+						{
+							flag++;
+						}
+					}
+
+					if (flag == tmparr.Length)
+					{
+						point++;
+					}
+
+				}
+			}
+			return point;
+		}
+
 	}
 }

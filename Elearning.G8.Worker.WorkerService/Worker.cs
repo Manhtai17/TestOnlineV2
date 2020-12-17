@@ -56,7 +56,6 @@ namespace Elearning.G8.Exam.WorkerService
 									var message = consumer.ReadMessage();
 									if (message == null)
 									{
-										Console.WriteLine("Null rồi bạn ơi " + DateTime.Now);
 										continue;
 									}
 
@@ -65,7 +64,7 @@ namespace Elearning.G8.Exam.WorkerService
 
 									var oldExam = (_examRepo.GetEntityByIdAsync(exam.ExamId).Result);
 
-									Console.WriteLine(oldExam.ExamId.ToString());
+									
 
 									if (oldExam == null)
 									{
@@ -86,7 +85,7 @@ namespace Elearning.G8.Exam.WorkerService
 						}
 					});
 					t.Start();
-					await Task.Delay(6000, stoppingToken);
+					await Task.Delay(3000, stoppingToken);
 					_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 				}
 			}

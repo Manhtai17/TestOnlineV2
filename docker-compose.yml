@@ -15,7 +15,7 @@ services:
 
 
   elearning.g8.ui:
-    image: ${DOCKER_REGISTRY-}elearningg8ui
+    image: pdmanhuet/ui:1.0.0
     build:
       context: .
       dockerfile: Elearning.G8.UI/Dockerfile

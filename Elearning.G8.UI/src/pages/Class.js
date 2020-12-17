@@ -19,8 +19,6 @@ function Class() {
 		dispatch(fetchExams(classId, userinfo.userID));
 	}, [dispatch, classId, userinfo.userID]);
 
-	console.log(exams);
-
 	if (error) return <div className="error">{error}</div>;
 	else if (loading || !exams) return <LinearProgress className="loadingbar" />;
 	else
@@ -30,17 +28,19 @@ function Class() {
 				<main className="container">
 					<div className="title">Danh sách bài kiểm tra</div>
 					<div className="content">
-						{exams.map((value) => (
-							sessionStorage.setItem(value.contestId, value.timeToDo),
-							<ExamItem
-								examId={value.contestId}
-								key={value.contestId}
-								examName={value.contestName}
-								timeToDo={value.timeToDo}
-								startTime={value.startTime}
-								finishTime={value.finishTime}
-							/>
-						))}
+						{exams.map((value) => {
+							sessionStorage.setItem(value.contestId, value.timeToDo);
+							return (
+								<ExamItem
+									examId={value.contestId}
+									key={value.contestId}
+									examName={value.contestName}
+									timeToDo={value.timeToDo}
+									startTime={value.startTime}
+									finishTime={value.finishTime}
+								/>
+							);
+						})}
 					</div>
 				</main>
 				<Footer />
