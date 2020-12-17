@@ -2,7 +2,6 @@
 using Confluent.Kafka;
 using Elearning.G8.Common.Kafka;
 using Elearning.G8.Exam.ApplicationCore;
-using Elearning.G8.Exam.ApplicationCore.Entitty;
 using Elearning.G8.Exam.Infrastructure.Repository.Interfaces;
 using Elearning.G8.Exam.Testing.Interfaces;
 using Elearning.G8.Exam.Testing.Utility;
@@ -10,10 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using static Elearning.G8.Exam.ApplicationCore.Enumration;
 
@@ -35,14 +31,6 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			_contestRepo = contestRepo;
 			_mapper = mapper;
 			_baseEntityService = baseEntityService;
-		}
-
-
-		[HttpGet("hello")]
-		public async Task<object> helloAbc()
-		{
-			var a = await _examService.CreateExam($"{Guid.NewGuid()}", $"{Guid.NewGuid()}" );
-			return a;
 		}
 		//[HttpGet]
 		//public async Task<ActionServiceResult> GetEntityByID([FromQuery] string examID)
@@ -137,7 +125,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				}
 				else
 				{
-					if(entity.Status != 1)
+					if (entity.Status != 1)
 					{
 						entity.ModifiedDate = Utils.GetNistTime();
 						response = await _baseEntityService.Update(entity);
@@ -146,12 +134,12 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				}
 				return response;
 			}
-			return new ActionServiceResult(); 
+			return new ActionServiceResult();
 		}
 
 
 		[HttpGet("{examID}")]
-		public async Task<ActionServiceResult> GetByID( string examID)
+		public async Task<ActionServiceResult> GetByID(string examID)
 		{
 			StringValues userHeader;
 			Request.Headers.TryGetValue("UserID", out userHeader);
@@ -180,6 +168,13 @@ namespace Elearning.G8.Exam.Testing.Controllers
 					var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
 					if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) >= 0)
 					{
+						if (exam.Status == 0)
+						{
+							//Tinh diem 
+							exam.Point = 10;
+							exam.Status = 1;
+							await _baseEntityService.Update(exam);
+						}
 						exam.IsDoing = null;
 						exam.Result = null;
 						exam.Status = null;
@@ -191,38 +186,29 @@ namespace Elearning.G8.Exam.Testing.Controllers
 					}
 					else
 					{
-						if ( exam.TimeUsing < contest.TimeToDo)
+						if (exam.TimeUsing < contest.TimeToDo)
 						{
 							if (exam.Status == 0)
 							{
 								if (exam.IsDoing == 1)
 								{
-									Stopwatch timer = new Stopwatch();
-
-									timer.Start();
-
 									var now = Utils.GetNistTime();
-
-									timer.Stop();
-
-									var timeTaken = timer.Elapsed.TotalSeconds;
-									if ((now - exam.ModifiedDate.Value).TotalSeconds - timeTaken > 15)
+									if ((now - exam.ModifiedDate.Value).TotalSeconds > 15)
 									{
 										if (exam.StartAgain == null)
 										{
 											if (exam.TimeUsing == 0)
 											{
-												exam.TimeUsing = (exam.ModifiedDate.Value - exam.CreatedDate.Value).TotalMinutes;
+												exam.TimeUsing += (exam.ModifiedDate.Value - exam.CreatedDate.Value).TotalSeconds / 60.0;
 												exam.StartAgain = exam.ModifiedDate = now;
 											}
 										}
 										else
 										{
-											exam.TimeUsing += (exam.ModifiedDate.Value - exam.StartAgain.Value).TotalMinutes;
+											exam.TimeUsing += (exam.ModifiedDate.Value - exam.StartAgain.Value).TotalSeconds / 60.0;
 											exam.StartAgain = exam.ModifiedDate = now;
 										}
 
-										exam.ModifiedDate = Utils.GetNistTime();
 										await _baseEntityService.Update(exam);
 
 										return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
@@ -255,15 +241,34 @@ namespace Elearning.G8.Exam.Testing.Controllers
 							await _baseEntityService.Update(exam);
 							return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
 						}
-						
-						
+
+
 					}
-					
-					return new ActionServiceResult() { Success=true,Code = Code.Success,Data = exam };
+
+					return new ActionServiceResult() { Success = true, Code = Code.Success, Data = exam };
 				}
 
 			}
 			return new ActionServiceResult();
+		}
+
+		private bool AcceptSubmit(Examination oldExam, Examination newExam, Contest contest)
+		{
+			var totalTimes = oldExam.TimeUsing;
+			if (oldExam.StartAgain == null)
+			{
+				totalTimes += ((DateTime.Now - oldExam.CreatedDate.Value).TotalSeconds) / 60.0;
+			}
+			else
+			{
+				totalTimes += ((DateTime.Now - oldExam.StartAgain.Value).TotalSeconds) / 60.0;
+			}
+
+			if (oldExam.Status == 1)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		[HttpPost]
@@ -281,7 +286,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 			}
 			else
 			{
-				var contest =await _contestRepo.GetEntityByIdAsync(exam.ContestId);
+				var contest = await _contestRepo.GetEntityByIdAsync(exam.ContestId);
 				var oldExam = await _baseEntityService.GetEntityById(exam.ExamId);
 
 				if (contest == null || oldExam == null)
@@ -298,75 +303,121 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				exam.Question = oldExam.Question;
 				exam.Answer = oldExam.Answer;
 				exam.CreatedDate = oldExam.CreatedDate;
-				if(DateTime.Compare(Utils.GetNistTime(),contest.FinishTime) <= 0)
+				exam.ModifiedDate = DateTime.Now;
+
+				if (oldExam != null && oldExam.Status == 1)
 				{
-					if (exam.Status == 0)
+					return new ActionServiceResult()
 					{
-						exam.ModifiedDate = Utils.GetNistTime();
-						var message = JsonConvert.SerializeObject(exam);
-						using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
+						Success = false,
+						Code = Code.SubmitDone,
+						Message = "Hệ thống đã ghi nhận bài làm trước đó"
+					};
+				}
+				if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)
+				{
+					var totaltimes = oldExam.TimeUsing;
+
+					totaltimes += ((DateTime.Now - oldExam.ModifiedDate.Value).TotalSeconds / 60.0);
+
+					exam.TimeUsing = totaltimes;
+
+					
+					//Con thoi gian lam bai
+					if (totaltimes < contest.TimeToDo)
+					{
+						//thuc hien tinh diem
+						if (exam.Status == 0)
 						{
-							await producer.SendMessage(message);
+							//tinh diem
+							var message = JsonConvert.SerializeObject(exam);
+							using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
+							{
+								await producer.SendMessage(message);
+							}
+
+							return new ActionServiceResult()
+							{
+								Success = true,
+								Code = Code.Success,
+								Message = Resources.Success,
+								Data = new
+								{
+									ExamID = exam.ExamId,
+									Point = 10
+								}
+							};
 						}
+						else
+						{
+							//tinh diem
+							await _baseEntityService.Update(exam);
+							return new ActionServiceResult()
+							{
+								Success = true,
+								Code = Code.Success,
+								Message = Resources.Success,
+								Data = new
+								{
+									ExamID = exam.ExamId,
+									Point = 10
+								}
+							};
+						}
+
+					}
+					//Vua het thoio gian lam bai
+					else if (totaltimes == contest.TimeToDo)
+					{
+						exam.Status = 1;
+						//tinh diem
+						await _baseEntityService.Update(exam);
 						return new ActionServiceResult()
 						{
 							Success = true,
 							Code = Code.Success,
 							Message = Resources.Success,
-							Data = exam.ExamId
+							Data = new
+							{
+								ExamID = exam.ExamId,
+								Point = 10
+							}
 						};
+
 					}
+					//Het thoi gian lam bai
 					else
 					{
-						if (oldExam.Status == 1)
+						exam.Status = 1;
+						await _baseEntityService.Update(exam);
+						return new ActionServiceResult()
 						{
-							return new ActionServiceResult()
+							Success = true,
+							Code = Code.Success,
+							Message = Resources.Success,
+							Data = new
 							{
-								Success=false,
-								Code=Code.SubmitDone,
-								Message = "Hệ thống đã ghi nhận bài làm trước đó"
-							};
-						}
-						if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)
-						{
-							//Todo tinh diem
-							exam.Point = 10;
-							exam.IsDoing = 0;
-							exam.Status = 1;
-							exam.ModifiedDate = Utils.GetNistTime();
-							await _baseEntityService.Update(exam);
-							result.Data = exam.ExamId;
-						}
-						else
-						{
-							return new ActionServiceResult
-							{
-								Code = Code.NotFound,
-								Data = null,
-								Message = Resources.NotFound,
-								Success = false
-
-							};
-						}
+								ExamID = exam.ExamId,
+								Point = 10
+							}
+						};
 					}
+
+
 				}
-				else
+
+				return new ActionServiceResult
 				{
-					return new ActionServiceResult
-					{
-						Code = Code.TimeOut,
-						Data = null,
-						Message = "Hết thời gian làm bài",
-						Success = false
+					Code = Code.TimeOut,
+					Data = new { 
+						ExamID = exam.ExamId,
+						Point = oldExam.Point
+					},
+					Message = "Hết thời gian làm bài",
+					Success = false
 
-					};
-				}
-				
-
-
+				};
 			}
-			return result;
-
 		}
 	}
 }

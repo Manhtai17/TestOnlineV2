@@ -1,0 +1,171 @@
+.Exam
+    position: relative
+    .container
+        width: 90%
+        &__alert
+            width: 100%
+            margin-top: 20vh
+            text-align: center
+            &-icon 
+                svg
+                    font-size: 10rem
+                &--timeout
+                    svg 
+                        color: $AlertColor
+                &--done 
+                    svg 
+                        color: $EmeraldColor
+            p 
+                font-size: 1.5rem
+            button
+                font-size: 1rem
+                padding: $smSpace
+                background: $PrimaryColor
+                border-radius: 8px
+                color: white
+                margin-top: $mdSpace
+    .submitExam
+        position: fixed
+        z-index: 100000
+        bottom: 30px
+        right: 30px
+        background: $PrimaryColor
+        color: white
+        padding: $mdSpace
+        font-size: 1.2em
+        border-radius: 5px
+        display: flex 
+        align-items: center
+        cursor: pointer
+        transition: 0.5s
+        svg
+            margin-right: $xsSpace
+        &:hover
+            opacity: 0.8
+    main
+        padding-top: 85px
+        display: flex
+        height: 100vh
+        .left
+            width: 25vw
+
+            .ExamSidebar
+                padding-right: 50px
+                &__timer
+                    margin-bottom: 20px
+                    text-align: center
+                    .MuiCircularProgress-root
+                        background-color: #f1f2f4
+                        +createShadow(rgba(0, 0, 0, 0.3))
+                        border-radius: 50%
+                        color: $EmeraldColor
+                    .timeCircle
+                        &--normal
+                            color: $SunFlowerColor
+                        &--danger
+                            color: $RedColor
+                    .timeText
+                        p 
+                            color: black
+                        p:first-child
+                            font-size: 1.2em
+                        p:nth-child(2)
+                            font-size: 2.5em
+                &__count
+                    text-align: center 
+                    margin-bottom: $smSpace
+                    font-size: 1.1em
+                    span 
+                        color: $PrimaryColor
+                &__questions
+                    background: white
+                    padding: $mdSpace
+                    border-radius: 20px
+                    &-titlelist
+                        text-align: center
+                        font-weight: 600
+                        margin-bottom: $smSpace
+                    &-list
+                        display: flex
+                        flex-wrap: wrap
+                        margin: 0 -1%
+                        &-item
+                            border-radius: 8px
+                            cursor: pointer
+                            flex-basis: 14.6666666%
+                            text-align: center
+                            padding: $xsSpace
+                            background-color: #f6f7f9
+                            margin: 1%
+                            transition: 0.2s
+                            &--done
+                                background-color: $EmeraldColor !important
+                                color: white !important
+                            &--flag
+                                background-color: $AlertColor !important
+                                color: white !important
+
+        .right
+            width: 75vw
+            &__btn
+                +flexDisplay(space-between)
+                margin-bottom: 2em
+                button
+                    display: flex
+                    align-items: center
+                    font-size: 1em
+                    padding: $smSpace
+                    cursor: pointer
+                    transition: 0.5s
+                    border-radius: $xsSpace
+                    &:hover 
+                        opacity: 0.8
+                &-control 
+                    display: flex
+                    button
+                        background: $PrimaryColor
+                        +createBorder(1px, $PrimaryColor)
+                        *
+                            color: white
+                        &:first-child
+                            margin-right: $mdSpace
+                &-flag
+                    background: $AlertColor
+                    svg
+                        color: white
+
+            &__question
+                .Question
+                    background: #f2f3f7
+                    +createShadow(rgba(0, 0, 0, 0.04))
+                    padding: $lgSpace
+                    border-radius: 20px
+                    .title
+                        font-size: 1.8em
+                        color: $PrimaryColor
+                        span
+                            color: black
+                    .answers
+                        margin-top: 1.5em
+                        &__item
+                            cursor: pointer
+                            display: flex
+                            align-items: center
+                            background: white
+                            padding: $mdSpace
+                            border-radius: 5px
+                            margin-bottom: $lgSpace
+                            +createBorder(4px, transparent)
+                            transition: 0.2s
+                            &:hover, &--active 
+                                background: $PrimaryColor
+                                color: white
+                                +createShadow(rgba(71, 150, 245, 0.6))
+                            &-checkbox
+                                margin-right: $smSpace
+                                span 
+                                    padding: 0
+                                .MuiCheckbox-colorSecondary.Mui-checked
+                                    color: white
+                            &-content
+                                font-size: 1.1em

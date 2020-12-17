@@ -1,0 +1,57 @@
+@import '_mixins', '_variables'
+
+*
+    margin: 0
+    padding: 0
+    box-sizing: border-box
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif
+
+body 
+    background: $BackgroundColor 
+
+main
+    padding-top: 55px
+
+.container
+    width: 75%
+    margin: auto
+
+.loadingbar
+    & > div
+        background: $PrimaryColor
+
+.loadingCircle
+    circle
+        color: $PrimaryColor
+
+a
+    text-decoration: none
+
+button
+    border: none
+    outline: none
+    cursor: pointer
+
+.error
+    text-transform: uppercase
+    color: red
+    text-align: center
+
+.endContent
+    margin-bottom: 3rem
+
+.LostConnection
+  z-index: 1000000
+  +flexDisplay(center)
+  align-items: center
+  background: $AlertColor
+  color: white
+  padding: $xsSpace
+  width: 100%
+  p 
+    padding-right: $smSpace
+  a 
+    text-decoration: underline
+    color: white
+
+@import 'pages/exam', 'components/header', 'components/footer', 'components/modal', 'components/examSubmit', 'pages/login', 'pages/home', 'pages/class', 'components/examItem'

@@ -1,0 +1,30 @@
+@import '../_mixins', '../_variables'
+
+footer 
+    z-index: 10000000
+    background-color: white
+    padding: 20px 50px
+    +flexDisplay(space-between)
+    align-items: center
+    *
+        color: $HeaderTextColor
+    .socials
+        a
+            margin-right: $lgSpace
+            svg
+                font-size: 2em
+            &:hover 
+                svg > *
+                    color: $PrimaryColor
+                    transition: 0.2s linear
+    button 
+        background-color: transparent
+        cursor: pointer
+        outline: none
+        padding: $xsSpace
+        +createBorder(1px, black)
+        transition: 0.2s linear
+        &:hover
+            border-color: $PrimaryColor
+            svg > *
+                color: $PrimaryColor

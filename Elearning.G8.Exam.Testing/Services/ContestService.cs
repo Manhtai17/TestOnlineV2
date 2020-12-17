@@ -233,9 +233,13 @@ namespace Elearning.G8.Exam.Testing.Services
 			return res;
 		}
 
-		public ActionServiceResult ThongKe(string userID, string contestID, string roleName)
+		public ActionServiceResult ThongKe(string userID, string contestID, string roleID)
 		{
 			var result = new ActionServiceResult();
+
+			var roleName = string.IsNullOrEmpty(_role.GetValueOrDefault(roleID)) ? "student" : _role.GetValueOrDefault(roleID);
+
+
 			var exams = _examBaseRepository.GetEntitites("Proc_GetExamByContestID", new object[] { contestID }).Result.ToList();
 			var transcripts = _transcriptBaseRepository.GetEntitites("Proc_GetTranscriptsByContestID", new object[] { contestID }).Result;
 			switch (roleName)

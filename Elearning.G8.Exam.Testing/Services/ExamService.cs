@@ -60,18 +60,6 @@ namespace Elearning.G8.Exam.Testing.Services
 
 					if (exam == null)
 					{
-						//Handle goi api tao de thi tu nhom 10
-						/*var res = JsonConvert.SerializeObject("[{'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'},{ 'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'},{ 'Question':'Day la cau hoi','Type':1,'Answer':'|Dap an 1|Dap an 2 |Dap an 3'}]");
-						
-						var examRes = new Exam();
-						examRes.ContestId = Guid.Parse(contestID);
-						examRes.ExamId = Guid.NewGuid();
-						examRes.UserId = Guid.Parse(userID);
-						examRes.Question = res;
-						//exam.Answer = response.Answer;
-						examRes.IsDoing = 0;
-						examRes.Status = 0;*/
-
 						var examRes = await CreateExam(contestID, userID);
 
 

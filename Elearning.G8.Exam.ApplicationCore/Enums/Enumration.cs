@@ -80,7 +80,8 @@
 			/// <summary>
 			/// Da ghi nhan submit truoc do
 			/// </summary>
-			SubmitDone=605
+			SubmitDone=605,
+			NotSubmit = 606
 		}
 	}
 }

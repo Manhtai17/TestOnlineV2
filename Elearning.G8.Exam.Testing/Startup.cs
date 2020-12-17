@@ -31,13 +31,13 @@ namespace Elearning.G8.Exam.Testing
 		{
 			services.AddCors(options =>
 			{
-				options.AddPolicy(name: AllowdOrigins,
-								  builder =>
-								  {
-									  builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-								  });
+				options.AddPolicy("foo",
+				builder =>
+				{
+					// Not a permanent solution, but just trying to isolate the problem
+					builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+				});
 			});
-
 			DatabaseContext.ConnectionString = "server = 104.248.149.21; port = 32267; user =root; password =12345678@Abc	; database =g8_db";
 			//DatabaseContext.ConnectionString = "server = localhost;port=3306; user =root; password =1234	; database =elearning";
 			services.AddControllers();
@@ -85,11 +85,21 @@ namespace Elearning.G8.Exam.Testing
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+
+			
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
 			}
-			app.UseCors();
+			app.UseHttpsRedirection();
+
+			
+
+			app.UseRouting();
+
+			app.UseCors("foo");
+
+			app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
 			//app.Use(async (context, next) =>
 			//{
@@ -119,11 +129,7 @@ namespace Elearning.G8.Exam.Testing
 				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Service V1");
 				c.RoutePrefix = "swagger";
 			});
-			app.UseHttpsRedirection();
-
-			app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-
-			app.UseRouting();
+			
 
 			app.UseAuthorization();
 

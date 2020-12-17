@@ -1,0 +1,38 @@
+@import '../_mixins', '../_variables'
+
+.FormTextInput
+    margin-bottom: $mdSpace
+    &__input
+        background-color: white
+        border-radius: 3px
+        +flexDisplay(space-between)
+        align-items: center
+        input 
+            width: 100%
+            border: none
+            outline: none
+            padding: $mdSpace
+            background-color: transparent
+            &::placeholder
+                color: black
+                font-weight: 600
+            &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+                -webkit-appearance: none
+                margin: 0
+            &[type = number] 
+                -moz-appearance: textfield
+        &>div 
+            display: flex
+            align-items: center
+        span 
+            cursor: pointer
+            padding-right: $mdSpace
+            svg
+                font-size: 1em
+                path
+                    color: black
+    &__alert
+        padding-right: $mdSpace
+        text-align: right
+        display: inline-block
+        color: $AlertColor

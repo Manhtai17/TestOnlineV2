@@ -1,0 +1,62 @@
+.ExamItem
+    background: white
+    padding: $mdSpace
+    margin-top: $mdSpace
+    border-radius: 5px
+    .head
+        +flexDisplay(space-between)
+        align-items: baseline
+        &__left 
+            font-size: 1.1em
+            font-weight: 600
+    .body 
+        margin-top: $smSpace
+        +flexDisplay(space-between)
+        align-items: center
+        &__left 
+            color: $GrayColor
+        &__right
+            button 
+                padding: $xsSpace $smSpace
+                border-radius: 5px
+                display: flex 
+                align-items: center
+                transition: 0.5s
+                svg, span 
+                    font-size: 1rem
+                    color: white
+                span 
+                    margin-left: $xsSpace
+                &:hover
+                    opacity: 0.9
+            &-score
+                background: $EmeraldColor
+            &-timeout
+                background: $AlertColor
+            &-start
+                background: $PrimaryColor
+    .startModal
+        button
+            margin-top: 30px
+            padding: $smSpace
+            font-size: 1rem
+            color: white
+            font-weight: 600
+            background-color: $PrimaryColor
+    .resultModal
+        height: 50vh
+        overflow-y: auto;
+        &__head 
+            margin-bottom: 1em
+        &__body
+            &-title
+                font-size: 1.2em
+                color: $PrimaryColor
+                margin-bottom: 0.5em
+            .questionsList
+                &__item
+                    margin-bottom: $smSpace
+                    &-title 
+                        margin-bottom: $xsSpace
+                    &-answers-item--active
+                        color: $PrimaryColor

@@ -1,21 +1,27 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM node:latest as build-stage
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+
+# set working directory
 WORKDIR /app
-EXPOSE 80
+EXPOSE 3000
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["Elearning.G8.UI/Elearning.G8.UI.csproj", "Elearning.G8.UI/"]
-RUN dotnet restore "Elearning.G8.UI/Elearning.G8.UI.csproj"
-COPY . .
-WORKDIR "/src/Elearning.G8.UI"
-RUN dotnet build "Elearning.G8.UI.csproj" -c Release -o /app/build
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-FROM build AS publish
-RUN dotnet publish "Elearning.G8.UI.csproj" -c Release -o /app/publish
+# install app dependencies
+COPY package*.json ./
+COPY package-lock.json ./
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
 
-FROM base AS final
+# add app
+COPY . ./
+RUN npm run build
+
+# start app
+#CMD ["npm", "start"]
+
+FROM nginx as production-stage
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Elearning.G8.UI.dll"]
+COPY --from=build-stage /app/build /app
+COPY /nginx.conf /etc/nginx/nginx.conf
