@@ -329,6 +329,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 					//thuc hien tinh diem
 					if (exam.Status == 0)
 					{
+						exam.Point =11;
 						//tinh diem
 						var message = JsonConvert.SerializeObject(exam);
 						using (var producer = new ProducerWrapper<Null, string>(_producerConfig, "autosubmit"))
@@ -350,6 +351,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 					}
 					else
 					{
+						exam.Point = 11;
 						//tinh diem
 						await _baseEntityService.Update(exam);
 						return new ActionServiceResult()
@@ -371,6 +373,7 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				{
 					exam.Status = 1;
 					//tinh diem
+					exam.Point = 11;
 					await _baseEntityService.Update(exam);
 					return new ActionServiceResult()
 					{
@@ -389,6 +392,8 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				else
 				{
 					exam.Status = 1;
+					//exam.Point = oldExam.Point;
+					exam.Point = 11;
 					await _baseEntityService.Update(exam);
 					return new ActionServiceResult()
 					{
@@ -406,7 +411,8 @@ namespace Elearning.G8.Exam.Testing.Controllers
 
 
 			}
-
+			exam.Point = 11;
+			//Tinh diem oldexam
 			return new ActionServiceResult
 			{
 				Code = Code.TimeOut,
