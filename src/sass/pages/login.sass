@@ -1,0 +1,88 @@
+.Login
+    min-height: 100vh
+    +flexDisplay(center)
+    align-items: center
+    .form
+        width: 480px
+        background: #f2f3f7
+        box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 10px 0px
+        padding: 50px
+        &__logo
+            text-align: center
+            margin-bottom: $lgSpace
+            img 
+                border-radius: 50%
+                width: 100px
+                height: 100px 
+                object-fit: contain
+        &__title, &__button 
+            text-align: center
+            text-transform: uppercase
+            font-size: 1em 
+            margin-bottom: $xlSpace
+            font-weight: 600
+        &__name 
+            +flexDisplay(space-between)
+            & > div 
+                flex-basis: 48.6%
+        &__option
+            margin-bottom: $xlSpace
+            font-size: 0.9em 
+            +flexDisplay(space-between)
+            align-items: center
+            a, label 
+                color: black
+            a:hover 
+                color: $PrimaryColor
+                transition: 0.5s
+            &-remember
+                display: flex 
+                align-items: center 
+                span 
+                    padding: 0
+                    margin-right: $xsSpace
+                    svg path 
+                        color: black
+        &__policy 
+            margin-bottom: $xlSpace
+            font-size: 0.9em 
+            display: flex
+            align-items: center
+            label
+                color: white
+                a 
+                    margin-left: $xsSpace
+            span 
+                padding: 0
+                margin-right: $xsSpace
+                svg path
+                    color: white
+        &__button 
+            display: block
+            padding: $mdSpace 0
+            background-color: white
+            +createBorder(2px, $PrimaryColor)
+            border-radius: 3px
+            transition: 0.1s linear
+            color: $PrimaryColor
+            font-size: 0.9em
+            &--active 
+                background-color: $PrimaryColor
+                color: white
+            &:hover 
+                opacity: 0.8 
+        &__signup 
+            text-align: center
+            a 
+                color: $PrimaryColor
+            span, a 
+                font-size: 0.9em
+            span 
+                color: black
+                margin-right: $smSpace
+        &__goback
+            font-size: 0.9em
+            text-align: center 
+            margin-top: $xsSpace
+            a
+                color: $PrimaryColor

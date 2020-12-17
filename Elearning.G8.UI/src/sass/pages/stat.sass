@@ -1,0 +1,50 @@
+.Stat
+    .no-data
+        text-align: center
+        font-size: 20px
+        margin-top: 60px
+
+    header 
+        .tabs
+            background: $BackgroundColor
+            padding: $mdSpace 0
+            +flexDisplay(center)
+            &__item
+                padding: $smSpace $mdSpace
+                text-transform: uppercase
+                cursor: pointer
+                transition: 0.5s
+                display: flex
+                align-items: center
+                border-bottom: $xsSpace solid $BackgroundColor
+                svg
+                    margin-right: $smSpace
+                svg, p
+                    color: black
+                &--active, &:hover
+                    border-bottom: $xsSpace solid $PrimaryColor
+                    svg, p
+                        color: $PrimaryColor
+
+    main 
+        min-height: 100vh
+        padding-top: 150px
+
+    .Table
+        .download-table-xls-button
+            margin-bottom: $smSpace
+            font-size: 16px
+            color: white
+            background: $PrimaryColor
+            padding: $smSpace
+
+        table
+            width: 100%
+            border-collapse: collapse
+            th, td
+                +createBorder(1px, $GrayColor)
+                text-align: center
+                padding: $xsSpace
+
+    .Chart
+        +flexDisplay(center)

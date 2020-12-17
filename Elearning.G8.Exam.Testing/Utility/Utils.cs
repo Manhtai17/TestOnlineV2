@@ -51,22 +51,23 @@ namespace Elearning.G8.Exam.Testing.Utility
 		public static int TinhDiem(string answer, string result)
 		{
 			var point = 0;
-			var arranswer = answer.Trim().Remove(0).Remove(answer.Last()).Split("|");
-			
-			var arrresult = result.Trim().Remove(0).Remove(result.Last()).Split("|");
 
-			for (var i = 0; i < arranswer.Length; i++)
+			var arranswer = answer.Trim().Split("|");
+
+			var arrresult = result.Trim().Split("|");
+			var arrLength = (arranswer.Length < arrresult.Length) ? (arranswer.Length - 1) : (arrresult.Length - 1);
+			for (var i = 1; i < arrLength; i++)
 			{
 				var tmparr = arranswer[i].Split("#");
 				var tmparr2 = arrresult[i].Split("#");
-				if(tmparr.Length!= tmparr2.Length)
+				if (tmparr.Length != tmparr2.Length)
 				{
 					i++;
 				}
 				else
 				{
 					var flag = 0;
-					for(var j = 0; j < tmparr.Length; j++)
+					for (var j = 0; j < tmparr.Length; j++)
 					{
 						if (!tmparr[j].Trim().ToLower().Equals(tmparr2[j].Trim().ToLower()))
 						{
@@ -85,7 +86,7 @@ namespace Elearning.G8.Exam.Testing.Utility
 
 				}
 			}
-			return point;
+			return (int)(point * 1.0 / (arrLength - 1) * 10.0);
 		}
 
 	}

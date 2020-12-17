@@ -1,0 +1,98 @@
+.Homepage
+    position: relative
+    main
+        min-height: 100vh
+    .classes
+        margin-bottom: 1.5em
+        .menu
+            margin-top: 2em
+            +flexDisplay(space-between)
+            align-items: center
+            background: White
+            padding: $xsSpace $mdSpace
+            border-radius: 8px
+            &__left
+                font-size: 1.3em
+                font-weight: 600
+                color: $PrimaryColor
+            &__right
+                background: #f6f7f9
+                display: flex
+                &-input
+                    width: 250px
+                    padding: $smSpace $xsSpace $smSpace $mdSpace
+                    background: transparent
+                    border: none
+                    outline: none
+                &-icon
+                    display: flex
+                    align-items: center
+                    padding-right: $mdSpace
+
+        .content
+            background: $SecondBg
+            margin-top: 1em
+            box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 10px 0px
+            padding: $mdSpace
+            border-radius: 8px
+            min-height: 30vh
+            .pagination
+                ul
+                    button
+                        color: black
+                    button.Mui-selected
+                        color: white
+                        background: $PrimaryColor
+            &__error
+                height: 30vh
+                +flexDisplay(center)
+                align-items: center
+            &__list
+                display: flex
+                flex-wrap: wrap
+                margin: -1% -1% 0 -1%
+                &-item
+                    +flexDisplay(space-between)
+                    flex-direction: column
+                    flex-basis: 23%
+                    padding: $xsSpace
+                    background: white
+                    margin: 1%
+                    border-radius: 8px
+                    transition: 0.5s
+                    &-image
+                        width: 100%
+                        padding-bottom: 65%
+                        border-radius: 8px
+                    &-semester
+                        color: $GrayColor
+                        margin: $xsSpace 0
+                    &-name
+                        color: black
+                    button
+                        width: 100%
+                        background: $PrimaryColor
+                        color: white
+                        border-radius: 8px
+                        padding: $xsSpace
+                        margin-top: $xsSpace
+                    &:hover
+                        opacity: 0.9
+    .exams
+        margin-bottom: 2em
+        .title
+            margin-top: 2em
+            background: White
+            padding: $smSpace $mdSpace
+            border-radius: 8px
+            font-size: 1.3em
+            font-weight: 600
+            color: $PrimaryColor
+        .content
+            background: $SecondBg
+            margin-top: 1em
+            box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 10px 0px
+            padding: $mdSpace
+            border-radius: 8px
+            .ExamItem:first-child
+                margin-top: 0

@@ -1,0 +1,80 @@
+@import '../_mixins', '../_variables'
+
+header 
+    position: fixed
+    width: 100vw
+    max-width: 100%
+    z-index: 10000
+    .navbar 
+        +flexDisplay(space-between)
+        background-color: white
+        a 
+            display: inline-block
+            font-size: 90%
+            text-transform: uppercase
+            padding: $lgSpace $mdSpace
+            color: black
+        &__left, &__right 
+            display: flex
+            align-items: center
+        &__left
+            & > a:first-child
+                padding: 0 $mdSpace
+            &-logo 
+                width: 40px 
+                height: 40px
+                object-fit: contain
+                border-radius: 50%
+            &-links
+                .active, a:hover
+                    color: $PrimaryColor
+                    border-bottom: 5px solid $PrimaryColor
+                a 
+                    padding: $lgSpace $mdSpace $mdSpace
+                    border-bottom: 5px solid white
+                    transition: 0.5s
+        &__right 
+            a:hover 
+                opacity: 0.9
+            &-signin a
+                padding: 0 $mdSpace
+                display: flex 
+                align-items: center
+                p 
+                    margin-left: $smSpace
+            &-wrapper
+                display: flex
+            &-profile
+                font-size: 85%
+                position: relative
+                padding: 0 0 0 $mdSpace !important
+                cursor: pointer
+                a 
+                    font-size: 100%
+                &-button 
+                    display: flex 
+                    align-items: center
+                    img 
+                        border-radius: 50%
+                        width: 30px 
+                        height: 30px
+                        object-fit: cover
+                &-list 
+                    display: none
+                    position: absolute
+                    z-index: 100
+                    background-color: white
+                    left: 50%
+                    width: 150px
+                    transform: translateX(-50%)
+                    box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 35px 0px
+                    a 
+                        padding: $mdSpace 0
+                        text-align: center
+                        display: block
+                        transition: 0.5s
+                        &:hover 
+                            color: $PrimaryColor
+                &:hover 
+                    .navbar__right-profile-list 
+                        display: block

@@ -316,7 +316,12 @@ namespace Elearning.G8.Exam.Testing.Controllers
 				{
 					Success = false,
 					Code = Code.SubmitDone,
-					Message = "Hệ thống đã ghi nhận bài làm trước đó"
+					Message = "Hệ thống đã ghi nhận bài làm trước đó",
+					Data = new
+					{
+						Point = oldExam.Point,
+						ExamID = exam.ExamId
+					}
 				};
 			}
 			if (DateTime.Compare(Utils.GetNistTime(), contest.FinishTime) <= 0)

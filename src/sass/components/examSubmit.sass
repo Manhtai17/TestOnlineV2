@@ -1,0 +1,63 @@
+.Examsubmit
+    position: absolute
+    bottom: 0
+    right: 0
+    left: 0
+    top: 0
+    background-color: $ModalBackground
+    z-index: 1000000
+    +flexDisplay(center)
+    .wrapper
+        position: fixed;
+        width: 550px
+        height: 400px 
+        transform: translateY(30%)
+        background-color: $BackgroundColor
+        .content
+            +flexDisplay(center)
+            height: 100%
+            flex-direction: column
+            align-items: center
+            &__text 
+                display: flex
+                font-size: 1.3em
+                svg 
+                    margin-right: $xsSpace 
+                    color: $EmeraldColor
+            &__score 
+                display: flex
+                align-items: baseline
+                p 
+                    font-size: 7em
+                    color: $PrimaryColor
+                span 
+                    font-size: 1.3em
+            &__back 
+                font-size: 1.1em
+                background: $PrimaryColor
+                color: white
+                padding: $smSpace
+                border-radius: 8px
+            &--error
+                svg 
+                    font-size: 10em
+                    color: $PrimaryColor
+                &-text 
+                    font-size: 1.3em
+                    color: $RedColor
+                &-btn 
+                    margin-top: $mdSpace
+                    font-size: 1.1em 
+                    padding: $smSpace
+                    +createBorder(1px, $PrimaryColor)
+                    transition: 0.2s
+                    border-radius: 8px
+                    &:hover 
+                        color: white 
+                        background: $PrimaryColor
+            &--loading 
+                &-text 
+                    font-size: 1.3em
+                    margin-top: $mdSpace
+                .MuiCircularProgress-colorPrimary
+                    color: $PrimaryColor
